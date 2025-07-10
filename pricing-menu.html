@@ -4,21 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Homme Made - Creative Agency & Systems Partner | Storytelling That Moves People</title>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap");
 
       :root {
-        --primary-dark: #1a1a1a;
-        --secondary-dark: #2d2d2d;
+        /* Unified Color System */
+        --primary-dark: #0a0a0a;
+        --secondary-dark: #1a1a1a;
         --accent-lime: #d3ff00;
         --accent-lime-dim: #a8cc00;
-        --text-primary: #ffffff;
-        --text-secondary: #b0b0b0;
+        --text-primary: #f1f1f1;
+        --text-secondary: #bbbbbb;
         --text-muted: #808080;
         --border-dark: rgba(211, 255, 0, 0.2);
         --shadow-dark: rgba(0, 0, 0, 0.3);
         --shadow-medium: rgba(0, 0, 0, 0.4);
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.15);
+        --terracotta: #E2725B;
         --gradient-dark: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        
+        /* Spacing System */
+        --space-xs: 0.5rem;
+        --space-sm: 1rem;
+        --space-md: 1.5rem;
+        --space-lg: 2rem;
+        --space-xl: 3rem;
+        --space-2xl: 5rem;
+        
+        /* Touch Targets */
+        --touch-target: 44px;
       }
 
       * {
@@ -28,13 +43,75 @@
       }
 
       body {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-        background: var(--gradient-dark);
+        font-family: 'Space Mono', monospace;
+        background: var(--primary-dark);
         margin: 0;
-        padding: 32px 16px;
+        padding: 0;
         min-height: 100vh;
         color: var(--text-primary);
         line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* Modular Header Component */
+      .site-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-md) var(--space-lg);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        background: rgba(10, 10, 10, 0.8);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-dark);
+      }
+
+      .site-header .logo {
+        font-family: 'Instrument Serif', serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--accent-lime);
+        text-decoration: none;
+      }
+
+      .site-header nav {
+        display: flex;
+        align-items: center;
+      }
+
+      .site-header nav a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        margin-left: var(--space-lg);
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
+        min-height: var(--touch-target);
+        min-width: var(--touch-target);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: 4px;
+      }
+
+      .site-header nav a:hover {
+        color: var(--accent-lime);
+      }
+
+      .site-header nav a:focus {
+        outline: 2px solid var(--accent-lime);
+        outline-offset: 2px;
+      }
+
+      /* Page Content Wrapper */
+      .page-content {
+        padding-top: 80px;
+        padding-left: 32px;
+        padding-right: 16px;
+        padding-bottom: 32px;
       }
 
       .menu-container {
@@ -450,8 +527,14 @@
 
       /* Responsive Design */
       @media (max-width: 768px) {
-        body {
-          padding: 16px 8px;
+        .page-content {
+          padding: 80px 16px 32px 16px;
+        }
+
+        .site-header nav a {
+          margin-left: var(--space-sm);
+          font-size: 0.85rem;
+          padding: var(--space-sm);
         }
 
         .header {
@@ -525,7 +608,20 @@
     </style>
   </head>
   <body>
-    <div class="menu-container">
+    <!-- Modular Header Component -->
+    <header class="site-header">
+      <a href="index.html" class="logo">Homme Made</a>
+      <nav>
+        <a href="index.html#services">Services</a>
+        <a href="index.html#philosophy">Philosophy</a>
+        <a href="index.html#work">Work</a>
+        <a href="pricing-menu.html">Pricing</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+    </header>
+
+    <div class="page-content">
+      <div class="menu-container">
       <div class="header">
         <div class="logo">HOMME MADE</div>
         <div class="tagline">
