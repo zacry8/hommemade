@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Homme Made — Human In The Loop Creative Systems</title>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <style>
     :root {
       --primary-dark: #0a0a0a;
@@ -20,6 +20,17 @@
       --glass-bg: rgba(255, 255, 255, 0.05);
       --glass-border: rgba(255, 255, 255, 0.15);
       --terracotta: #E2725B;
+      
+      /* Spacing System */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2rem;
+      --space-xl: 3rem;
+      --space-2xl: 5rem;
+      
+      /* Touch Targets */
+      --touch-target: 44px;
     }
 
     body {
@@ -34,13 +45,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.5rem 2rem;
+      padding: var(--space-md) var(--space-lg);
       position: fixed;
       width: 100%;
       top: 0;
       z-index: 1000;
       background: rgba(10, 10, 10, 0.8);
       backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-dark);
     }
 
     .logo {
@@ -54,13 +66,25 @@
     nav a {
       color: var(--text-secondary);
       text-decoration: none;
-      margin-left: 2rem;
+      margin-left: var(--space-lg);
       font-size: 0.95rem;
       transition: color 0.3s ease;
+      min-height: var(--touch-target);
+      min-width: var(--touch-target);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: 4px;
     }
 
     nav a:hover {
       color: var(--accent-lime);
+    }
+
+    nav a:focus {
+      outline: 2px solid var(--accent-lime);
+      outline-offset: 2px;
     }
 
     .hero {
@@ -69,8 +93,7 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 0 2rem;
-      background: url('your-background-video-or-gif.mp4') center/cover no-repeat;
+      padding: 0 var(--space-lg);
       backdrop-filter: blur(4px);
       position: relative;
     }
@@ -79,18 +102,18 @@
       font-family: 'Instrument Serif', serif;
       font-size: 3.5rem;
       color: var(--accent-lime);
-      margin-bottom: 1rem;
+      margin-bottom: var(--space-sm);
     }
 
     .hero p {
       font-size: 1.25rem;
       color: var(--text-primary);
       max-width: 600px;
-      margin: 0 auto 2rem;
+      margin: 0 auto var(--space-lg);
     }
 
     section {
-      padding: 5rem 2rem;
+      padding: var(--space-2xl) var(--space-lg);
       max-width: 1200px;
       margin: 0 auto;
     }
@@ -100,8 +123,8 @@
       border: 1px solid var(--border-dark);
       backdrop-filter: blur(16px);
       border-radius: 16px;
-      padding: 2rem;
-      margin-bottom: 3rem;
+      padding: var(--space-lg);
+      margin-bottom: var(--space-xl);
       box-shadow: 0 8px 32px var(--shadow-dark);
       transition: all 0.3s ease;
     }
@@ -115,21 +138,29 @@
       font-family: 'Instrument Serif', serif;
       font-size: 2rem;
       font-weight: 700;
-      margin-bottom: 1rem;
+      margin-bottom: var(--space-sm);
       color: var(--accent-lime);
     }
 
     .pillars {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 2rem;
+      gap: var(--space-lg);
+    }
+
+    .pillars h3 {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      margin-bottom: var(--space-xs);
     }
 
     .cta-button {
       background: var(--accent-lime);
       color: var(--primary-dark);
       border: none;
-      padding: 16px 32px;
+      padding: var(--space-sm) var(--space-lg);
       border-radius: 8px;
       font-weight: 600;
       font-size: 1rem;
@@ -137,14 +168,22 @@
       transition: all 0.2s ease;
       text-decoration: none;
       display: inline-block;
-      margin: 0 8px;
+      margin: 0 var(--space-xs);
       font-family: 'Space Mono', monospace;
+      min-height: var(--touch-target);
+      min-width: var(--touch-target);
+      text-align: center;
     }
 
     .cta-button:hover {
       background: var(--accent-lime-dim);
       transform: translateY(-1px);
       box-shadow: 0 4px 16px rgba(211, 255, 0, 0.3);
+    }
+
+    .cta-button:focus {
+      outline: 2px solid var(--accent-lime);
+      outline-offset: 2px;
     }
 
     .cta-button.secondary {
@@ -158,13 +197,18 @@
       color: var(--primary-dark);
     }
 
+    .cta-button.secondary:focus {
+      outline: 2px solid var(--accent-lime);
+      outline-offset: 2px;
+    }
+
     .hero-buttons {
-      margin-top: 2rem;
+      margin-top: var(--space-lg);
     }
 
     .footer {
       text-align: center;
-      padding: 4rem 2rem 2rem;
+      padding: var(--space-2xl) var(--space-lg) var(--space-lg);
       font-size: 0.9rem;
       color: var(--text-muted);
     }
@@ -174,7 +218,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
+        gap: var(--space-sm);
       }
 
       .cta-button {
@@ -189,8 +233,9 @@
       }
 
       nav a {
-        margin-left: 1rem;
+        margin-left: var(--space-sm);
         font-size: 0.85rem;
+        padding: var(--space-sm);
       }
     }
   </style>
@@ -209,7 +254,7 @@
 
   <section class="hero">
     <div>
-      <h1>Human in the 🔁</h1>
+      <h1>Human in the Loop 🔁</h1>
       <p>Automation with intention. Branding with soul. Creative systems that feel handcrafted—even when they scale.</p>
       <div class="hero-buttons">
         <a href="pricing-menu.html" class="cta-button">View Pricing</a>
@@ -219,8 +264,8 @@
   </section>
 
   <section id="services">
+    <h2 class="section-title">What We Do</h2>
     <div class="glass">
-      <h2 class="section-title">What We Do</h2>
       <div class="pillars">
         <div>
           <h3>Creative Direction</h3>
@@ -246,8 +291,8 @@
   </section>
 
   <section id="philosophy">
+    <h2 class="section-title">Our Ethos</h2>
     <div class="glass">
-      <h2 class="section-title">Our Ethos</h2>
       <ul>
         <li><strong>Craft over churn.</strong> We don’t mass-produce—we design with clarity and care.</li>
         <li><strong>People before process.</strong> Every tool we use enhances the human, not replaces them.</li>
@@ -258,16 +303,16 @@
   </section>
 
   <section id="work">
+    <h2 class="section-title">Recent Work</h2>
     <div class="glass">
-      <h2 class="section-title">Recent Work</h2>
       <p>We’ve helped transform freight recruiters, scaled brand launches, built grassroots hiring campaigns, and designed internal systems that feel like magic. Want to see what a tailored creative system can do for you?</p>
       <p><a href="pricing-menu.html" style="color: var(--accent-lime); text-decoration: underline;">Let’s talk about your next project →</a></p>
     </div>
   </section>
 
   <section id="contact">
+    <h2 class="section-title">Get In Touch</h2>
     <div class="glass">
-      <h2 class="section-title">Get In Touch</h2>
       <p>Whether you're scaling, rebranding, or starting something ambitious, we’d love to co-create with you.</p>
       <p>Ready to see how we can help? <a href="pricing-menu.html" style="color: var(--accent-lime); text-decoration: underline;">View our pricing and services</a> or reach out directly.</p>
       <p>Email: <a href="mailto:hello@hommemade.studio" style="color: var(--accent-lime);">hello@hommemade.studio</a></p>
