@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Homme Made — Human In The Loop Creative Systems</title>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="styles/header-nav.css">
   <style>
     :root {
       --primary-dark: #0a0a0a;
@@ -41,58 +42,6 @@
       overflow-x: hidden;
     }
 
-    /* Modular Header Component */
-    .site-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: var(--space-md) var(--space-lg);
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 1000;
-      background: rgba(10, 10, 10, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-dark);
-    }
-
-    .site-header .logo {
-      font-family: 'Instrument Serif', serif;
-      font-size: 1.75rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--accent-lime);
-      text-decoration: none;
-    }
-
-    .site-header nav {
-      display: flex;
-      align-items: center;
-    }
-
-    .site-header nav a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      margin-left: var(--space-lg);
-      font-size: 0.95rem;
-      transition: color 0.3s ease;
-      min-height: var(--touch-target);
-      min-width: var(--touch-target);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: var(--space-xs) var(--space-sm);
-      border-radius: 4px;
-    }
-
-    .site-header nav a:hover {
-      color: var(--accent-lime);
-    }
-
-    .site-header nav a:focus {
-      outline: 2px solid var(--accent-lime);
-      outline-offset: 2px;
-    }
 
     .hero {
       height: 100vh;
@@ -239,25 +188,35 @@
         font-size: 2.5rem;
       }
 
-      .site-header nav a {
-        margin-left: var(--space-sm);
-        font-size: 0.85rem;
-        padding: var(--space-sm);
-      }
     }
   </style>
 </head>
 <body>
-  <header class="site-header">
+  <!-- Floating Navigation Pill -->
+  <nav class="floating-nav">
     <a href="#" class="logo">Homme Made</a>
-    <nav>
+    <div class="nav-links">
       <a href="#services">Services</a>
       <a href="#philosophy">Philosophy</a>
       <a href="#work">Work</a>
       <a href="pricing-menu.html">Pricing</a>
       <a href="#contact">Contact</a>
-    </nav>
-  </header>
+    </div>
+    <div class="hamburger" id="hamburgerBtn">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#services">Services</a>
+    <a href="#philosophy">Philosophy</a>
+    <a href="#work">Work</a>
+    <a href="pricing-menu.html">Pricing</a>
+    <a href="#contact">Contact</a>
+  </div>
 
   <section class="hero">
     <div>
@@ -332,5 +291,7 @@
   <footer class="footer">
     &copy; 2025 Homme Made. Crafted by creatives, for visionaries.
   </footer>
+
+  <script src="js/header-nav.js"></script>
 </body>
 </html>
