@@ -71,12 +71,25 @@ git commit -m "$COMMIT_MSG"
 
 # Push to remote
 print_status "Pushing to remote repository..."
-if git push; then
-    print_success "Successfully pushed to GitHub!"
-    print_success "Your changes are now live at: https://github.com/zacry8/hommemade"
+
+# Check if upstream is set, if not set it
+if ! git rev-parse --abbrev-ref --symbolic-full-name @{u} > /dev/null 2>&1; then
+    print_status "Setting upstream branch..."
+    if git push --set-upstream origin main; then
+        print_success "Successfully pushed to GitHub!"
+        print_success "Your changes are now live at: https://github.com/zacry8/hommemade"
+    else
+        print_error "Failed to push to remote repository"
+        exit 1
+    fi
 else
-    print_error "Failed to push to remote repository"
-    exit 1
+    if git push; then
+        print_success "Successfully pushed to GitHub!"
+        print_success "Your changes are now live at: https://github.com/zacry8/hommemade"
+    else
+        print_error "Failed to push to remote repository"
+        exit 1
+    fi
 fi
 
 print_success "Deployment complete!"
