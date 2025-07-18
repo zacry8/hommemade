@@ -90,13 +90,16 @@ export default async function handler(req, res) {
     const filename = `submissions/${submissionId}.json`;
     const blob = await put(filename, JSON.stringify(submissionData, null, 2), {
       access: 'private',
-      addRandomSuffix: false
+      addRandomSuffix: false,
+      token: config.BLOB_READ_WRITE_TOKEN,
+      cacheControlMaxAge: 3600, // 1 hour browser cache
+      multipart: true // For reliability with larger submissions
     });
 
     console.log('💾 Submission stored in blob:', {
       submissionId,
       blobUrl: blob.url,
-      size: blob.size
+      pathname: blob.pathname
     });
 
     // Send email notification if enabled

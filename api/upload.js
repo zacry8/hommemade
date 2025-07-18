@@ -78,6 +78,8 @@ export default async function handler(req, res) {
       access: 'private', // Private access for user privacy
       addRandomSuffix: false, // Use our own naming scheme
       token: config.BLOB_READ_WRITE_TOKEN,
+      cacheControlMaxAge: 3600, // 1 hour browser cache
+      multipart: true // For reliability with larger files
     });
 
     // Log successful upload (without sensitive data)
@@ -85,7 +87,7 @@ export default async function handler(req, res) {
       submissionId,
       originalName: fileName,
       blobUrl: blob.url,
-      size: blob.size,
+      pathname: blob.pathname,
       timestamp: new Date().toISOString()
     });
 
@@ -96,7 +98,7 @@ export default async function handler(req, res) {
         url: blob.url,
         fileName: fileName,
         uniqueFileName: uniqueFileName,
-        size: blob.size,
+        pathname: blob.pathname,
         uploadedAt: new Date().toISOString()
       }
     });
