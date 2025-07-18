@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Homme Made</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-dark: #0a0a0a;
+      --secondary-dark: #101010;
+      --accent-lime: #d3ff00;
+      --accent-lime-dim: #a8cc00;
+      --text-primary: #f1f1f1;
+      --text-secondary: #ffffff;
+      --text-muted: #808080;
+      --border-dark: rgba(211, 255, 0, 0.2);
+      --shadow-dark: rgba(0, 0, 0, 0.3);
+      --shadow-medium: rgba(0, 0, 0, 0.4);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --terracotta: #E2725B;
+      --terracotta-dim: #C85A47;
+      --terracotta-alpha: rgba(226, 114, 91, 0.15);
+      --terracotta-alpha-hover: rgba(226, 114, 91, 0.25);
+      --terracotta-border: rgba(226, 114, 91, 0.3);
+      --terracotta-border-hover: rgba(226, 114, 91, 0.5);
+      
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2rem;
+      --space-xl: 3rem;
+      --space-2xl: 5rem;
+      
+      --glass-bg-hover: #101010;
+      --glass-border-hover: rgba(211, 255, 0, 0.4);
+      --glass-backdrop-blur: 16px;
+      --glass-backdrop-blur-enhanced: 20px;
+      
+      --animation-duration-fast: 0.15s;
+      --animation-duration-normal: 0.3s;
+      --animation-duration-slow: 0.5s;
+      --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+      --animation-easing-bouncy: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Space Mono', monospace;
+      background: var(--primary-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-lg);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .header h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.5rem;
+      color: var(--accent-lime);
+      margin-bottom: var(--space-sm);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    .stat-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: var(--space-lg);
+      backdrop-filter: blur(var(--glass-backdrop-blur));
+      transition: all var(--animation-duration-normal) var(--animation-easing);
+    }
+
+    .stat-card:hover {
+      border-color: var(--glass-border-hover);
+      background: var(--glass-bg-hover);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-lime);
+      margin-bottom: var(--space-xs);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: var(--space-sm) var(--space-md);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all var(--animation-duration-normal) var(--animation-easing);
+    }
+
+    .btn-primary {
+      background: var(--accent-lime);
+      color: var(--primary-dark);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-lime-dim);
+    }
+
+    .btn-secondary {
+      background: var(--glass-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border-hover);
+    }
+
+    .submissions-container {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      backdrop-filter: blur(var(--glass-backdrop-blur));
+      overflow: hidden;
+    }
+
+    .submissions-header {
+      padding: var(--space-lg);
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .submissions-header h2 {
+      margin: 0;
+      color: var(--text-secondary);
+    }
+
+    .search-input {
+      padding: var(--space-sm);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      background: var(--glass-bg);
+      color: var(--text-primary);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      width: 300px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent-lime);
+    }
+
+    .submissions-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .submissions-table th,
+    .submissions-table td {
+      padding: var(--space-sm);
+      text-align: left;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .submissions-table th {
+      background: var(--glass-bg);
+      color: var(--text-secondary);
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+
+    .submissions-table tr:hover {
+      background: rgba(211, 255, 0, 0.05);
+    }
+
+    .submission-id {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .submission-timestamp {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .submission-name {
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .submission-email {
+      color: var(--accent-lime);
+    }
+
+    .submission-actions {
+      display: flex;
+      gap: var(--space-xs);
+    }
+
+    .btn-small {
+      padding: var(--space-xs) var(--space-sm);
+      font-size: 0.8rem;
+      border-radius: 6px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: var(--space-xl);
+      color: var(--text-muted);
+    }
+
+    .error {
+      background: var(--terracotta-alpha);
+      border: 1px solid var(--terracotta-border);
+      color: var(--terracotta);
+      padding: var(--space-sm);
+      border-radius: 8px;
+      margin-bottom: var(--space-lg);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(var(--glass-backdrop-blur));
+      z-index: 1000;
+    }
+
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--secondary-dark);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: var(--space-lg);
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      width: 90%;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .submission-detail {
+      margin-bottom: var(--space-md);
+    }
+
+    .submission-detail h3 {
+      color: var(--accent-lime);
+      margin-bottom: var(--space-sm);
+    }
+
+    .submission-detail p {
+      margin-bottom: var(--space-sm);
+    }
+
+    .file-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .file-item {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: var(--space-sm);
+      margin-bottom: var(--space-xs);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .file-name {
+      color: var(--text-secondary);
+    }
+
+    .file-download {
+      color: var(--accent-lime);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .file-download:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: var(--space-sm);
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .search-input {
+        width: 100%;
+      }
+
+      .submissions-table {
+        font-size: 0.8rem;
+      }
+
+      .submissions-table th,
+      .submissions-table td {
+        padding: var(--space-xs);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📊 Admin Dashboard</h1>
+      <p>Manage your onboarding form submissions</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number" id="totalSubmissions">—</div>
+        <div class="stat-label">Total Submissions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="todaySubmissions">—</div>
+        <div class="stat-label">Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="thisWeekSubmissions">—</div>
+        <div class="stat-label">This Week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="totalFiles">—</div>
+        <div class="stat-label">Files Uploaded</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="exportCSV()">📥 Export CSV</button>
+      <button class="btn btn-secondary" onclick="refreshData()">🔄 Refresh</button>
+      <button class="btn btn-secondary" onclick="exportJSON()">📄 Export JSON</button>
+    </div>
+
+    <div id="error-message" class="error" style="display: none;"></div>
+
+    <div class="submissions-container">
+      <div class="submissions-header">
+        <h2>Recent Submissions</h2>
+        <input type="text" class="search-input" placeholder="Search by name, email, or brand..." id="searchInput" onkeyup="filterSubmissions()">
+      </div>
+      
+      <div id="submissions-content">
+        <div class="loading">Loading submissions...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for viewing submission details -->
+  <div id="submissionModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Submission Details</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div id="modalContent">
+        <!-- Dynamic content will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allSubmissions = [];
+    let displayedSubmissions = [];
+
+    // Load submissions on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadSubmissions();
+    });
+
+    async function loadSubmissions() {
+      try {
+        showLoading();
+        const response = await fetch('/api/admin/submissions');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        allSubmissions = data;
+        displayedSubmissions = data;
+        
+        renderSubmissions();
+        updateStats();
+        hideError();
+        
+      } catch (error) {
+        console.error('Error loading submissions:', error);
+        showError('Failed to load submissions: ' + error.message);
+      }
+    }
+
+    function renderSubmissions() {
+      const container = document.getElementById('submissions-content');
+      
+      if (displayedSubmissions.length === 0) {
+        container.innerHTML = '<div class="loading">No submissions found.</div>';
+        return;
+      }
+
+      const tableHTML = `
+        <table class="submissions-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Brand</th>
+              <th>Files</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${displayedSubmissions.map(submission => `
+              <tr>
+                <td>
+                  <div class="submission-timestamp">${formatDate(submission.timestamp)}</div>
+                  <div class="submission-id">${submission.id}</div>
+                </td>
+                <td class="submission-name">${submission.name || 'N/A'}</td>
+                <td class="submission-email">${submission.email || 'N/A'}</td>
+                <td>${submission.brandName || 'N/A'}</td>
+                <td>${submission.files ? submission.files.length : 0}</td>
+                <td class="submission-actions">
+                  <button class="btn btn-small btn-primary" onclick="viewSubmission('${submission.id}')">View</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      
+      container.innerHTML = tableHTML;
+    }
+
+    function updateStats() {
+      const total = allSubmissions.length;
+      const today = allSubmissions.filter(s => isToday(s.timestamp)).length;
+      const thisWeek = allSubmissions.filter(s => isThisWeek(s.timestamp)).length;
+      const totalFiles = allSubmissions.reduce((sum, s) => sum + (s.files ? s.files.length : 0), 0);
+
+      document.getElementById('totalSubmissions').textContent = total;
+      document.getElementById('todaySubmissions').textContent = today;
+      document.getElementById('thisWeekSubmissions').textContent = thisWeek;
+      document.getElementById('totalFiles').textContent = totalFiles;
+    }
+
+    function filterSubmissions() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      
+      if (!query) {
+        displayedSubmissions = allSubmissions;
+      } else {
+        displayedSubmissions = allSubmissions.filter(submission => 
+          (submission.name && submission.name.toLowerCase().includes(query)) ||
+          (submission.email && submission.email.toLowerCase().includes(query)) ||
+          (submission.brandName && submission.brandName.toLowerCase().includes(query))
+        );
+      }
+      
+      renderSubmissions();
+    }
+
+    async function viewSubmission(submissionId) {
+      const submission = allSubmissions.find(s => s.id === submissionId);
+      if (!submission) return;
+
+      const modalTitle = document.getElementById('modalTitle');
+      const modalContent = document.getElementById('modalContent');
+      
+      modalTitle.textContent = `${submission.name || 'Submission'} - ${formatDate(submission.timestamp)}`;
+      
+      const detailsHTML = `
+        <div class="submission-detail">
+          <h3>📋 Contact Information</h3>
+          <p><strong>Name:</strong> ${submission.name || 'N/A'}</p>
+          <p><strong>Email:</strong> ${submission.email || 'N/A'}</p>
+          <p><strong>Phone:</strong> ${submission.phone || 'N/A'}</p>
+          <p><strong>Brand/Business:</strong> ${submission.brandName || 'N/A'}</p>
+          <p><strong>Industry:</strong> ${submission.industry || 'N/A'}</p>
+        </div>
+
+        ${submission.onlinePresence ? `
+        <div class="submission-detail">
+          <h3>🌐 Online Presence</h3>
+          <p>${submission.onlinePresence}</p>
+        </div>
+        ` : ''}
+
+        <div class="submission-detail">
+          <h3>🎯 Project Goals</h3>
+          <p><strong>Why Now:</strong> ${submission.whyNow || 'N/A'}</p>
+          <p><strong>Success Metrics:</strong> ${submission.successMetrics || 'N/A'}</p>
+          <p><strong>Main Struggles:</strong> ${submission.struggles ? submission.struggles.join(', ') : 'N/A'}</p>
+          ${submission.otherStruggle ? `<p><strong>Other Struggle:</strong> ${submission.otherStruggle}</p>` : ''}
+        </div>
+
+        ${submission.brandVoice || submission.brandTone || submission.avoidances || submission.aestheticReferences ? `
+        <div class="submission-detail">
+          <h3>🎨 Brand Vibe</h3>
+          ${submission.brandVoice ? `<p><strong>Brand Voice:</strong> ${submission.brandVoice}</p>` : ''}
+          ${submission.brandTone ? `<p><strong>Brand Tone:</strong> ${submission.brandTone}</p>` : ''}
+          ${submission.avoidances ? `<p><strong>Avoidances:</strong> ${submission.avoidances}</p>` : ''}
+          ${submission.aestheticReferences ? `<p><strong>Aesthetic References:</strong> ${submission.aestheticReferences}</p>` : ''}
+        </div>
+        ` : ''}
+
+        ${submission.offering || submission.valueProvision || submission.dreamAudience || submission.feedback ? `
+        <div class="submission-detail">
+          <h3>👥 Business Details</h3>
+          ${submission.offering ? `<p><strong>Offering:</strong> ${submission.offering}</p>` : ''}
+          ${submission.valueProvision ? `<p><strong>Value Provision:</strong> ${submission.valueProvision}</p>` : ''}
+          ${submission.dreamAudience ? `<p><strong>Dream Audience:</strong> ${submission.dreamAudience}</p>` : ''}
+          ${submission.feedback ? `<p><strong>Feedback:</strong> ${submission.feedback}</p>` : ''}
+        </div>
+        ` : ''}
+
+        <div class="submission-detail">
+          <h3>📞 Communication</h3>
+          <p><strong>Preferred Method:</strong> ${submission.communication || 'N/A'}</p>
+          ${submission.additionalInfo ? `<p><strong>Additional Info:</strong> ${submission.additionalInfo}</p>` : ''}
+        </div>
+
+        ${submission.files && submission.files.length > 0 ? `
+        <div class="submission-detail">
+          <h3>📎 Uploaded Files</h3>
+          <ul class="file-list">
+            ${submission.files.map(file => `
+              <li class="file-item">
+                <span class="file-name">${file.fileName}</span>
+                <a href="${file.url}" class="file-download" target="_blank">Download</a>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+        ` : ''}
+      `;
+      
+      modalContent.innerHTML = detailsHTML;
+      document.getElementById('submissionModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('submissionModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('submissionModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+
+    async function exportCSV() {
+      try {
+        const response = await fetch('/api/admin/export-csv');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `submissions-${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+      } catch (error) {
+        console.error('Error exporting CSV:', error);
+        showError('Failed to export CSV: ' + error.message);
+      }
+    }
+
+    async function exportJSON() {
+      try {
+        const dataStr = JSON.stringify(allSubmissions, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = window.URL.createObjectURL(dataBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `submissions-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+      } catch (error) {
+        console.error('Error exporting JSON:', error);
+        showError('Failed to export JSON: ' + error.message);
+      }
+    }
+
+    function refreshData() {
+      loadSubmissions();
+    }
+
+    function showLoading() {
+      document.getElementById('submissions-content').innerHTML = '<div class="loading">Loading submissions...</div>';
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+    }
+
+    function hideError() {
+      document.getElementById('error-message').style.display = 'none';
+    }
+
+    function formatDate(timestamp) {
+      return new Date(timestamp).toLocaleDateString() + ' ' + new Date(timestamp).toLocaleTimeString();
+    }
+
+    function isToday(timestamp) {
+      const today = new Date();
+      const date = new Date(timestamp);
+      return date.toDateString() === today.toDateString();
+    }
+
+    function isThisWeek(timestamp) {
+      const today = new Date();
+      const date = new Date(timestamp);
+      const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      return date >= weekAgo;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "name": "homme-made-onboarding",
+  "version": "1.0.0",
+  "description": "Homme Made onboarding system with CRM integration and file upload",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build process required for static site'",
+    "start": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@vercel/blob": "^0.15.1",
+    "nodemailer": "^6.9.7"
+  },
+  "devDependencies": {
+    "vercel": "^32.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/homme-made.git"
+  },
+  "keywords": [
+    "onboarding",
+    "crm",
+    "vercel",
+    "glassmorphism",
+    "form",
+    "file-upload",
+    "email-notifications"
+  ],
+  "author": "Homme Made",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/homme-made/issues"
+  },
+  "homepage": "https://github.com/yourusername/homme-made#readme"
+}

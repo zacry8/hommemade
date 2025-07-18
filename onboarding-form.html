@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Before We Build Together  Homme Made Onboarding</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="styles/header-nav.css">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R7M4D7CC93"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-R7M4D7CC93');
+  </script>
+
+  <style>
+    :root {
+      --primary-dark: #0a0a0a;
+      --secondary-dark: #101010;
+      --accent-lime: #d3ff00;
+      --accent-lime-dim: #a8cc00;
+      --text-primary: #f1f1f1;
+      --text-secondary: #ffffff;
+      --text-muted: #808080;
+      --border-dark: rgba(211, 255, 0, 0.2);
+      --shadow-dark: rgba(0, 0, 0, 0.3);
+      --shadow-medium: rgba(0, 0, 0, 0.4);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --terracotta: #E2725B;
+      --terracotta-dim: #C85A47;
+      --terracotta-alpha: rgba(226, 114, 91, 0.15);
+      --terracotta-alpha-hover: rgba(226, 114, 91, 0.25);
+      --terracotta-border: rgba(226, 114, 91, 0.3);
+      --terracotta-border-hover: rgba(226, 114, 91, 0.5);
+      
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2rem;
+      --space-xl: 3rem;
+      --space-2xl: 5rem;
+      
+      --touch-target: 44px;
+      
+      --hover-gradient-primary: #d3ff00;
+      --hover-gradient-secondary: transparent;
+      --hover-gradient-transition: 0.3s ease;
+      --hover-gradient-size: closest-corner;
+      
+      --glass-bg-hover: #101010;
+      --glass-border-hover: rgba(211, 255, 0, 0.4);
+      --glass-backdrop-blur: 16px;
+      --glass-backdrop-blur-enhanced: 20px;
+      
+      --animation-duration-fast: 0.15s;
+      --animation-duration-normal: 0.3s;
+      --animation-duration-slow: 0.5s;
+      --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+      --animation-easing-bouncy: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Space Mono', monospace;
+      background: var(--primary-dark);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+
+    /* Main Container */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 120px var(--space-lg) var(--space-2xl);
+    }
+
+    /* Form Hero */
+    .form-hero {
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+    }
+
+    .form-hero h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 3rem;
+      color: var(--accent-lime);
+      margin-bottom: var(--space-sm);
+      line-height: 1.2;
+    }
+
+    .form-hero p {
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      max-width: 600px;
+      margin: 0 auto var(--space-lg);
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      margin-bottom: var(--space-xl);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--secondary-dark);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: var(--space-sm);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-lime), var(--terracotta));
+      transition: width 0.5s var(--animation-easing);
+      width: 20%;
+    }
+
+    .progress-text {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Glass Form Container */
+    .form-container {
+      background: var(--secondary-dark);
+      border: 1px solid var(--border-dark);
+      backdrop-filter: blur(var(--glass-backdrop-blur));
+      -webkit-backdrop-filter: blur(var(--glass-backdrop-blur));
+      border-radius: 33px;
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      box-shadow: 0 8px 32px var(--shadow-dark);
+      transition: all var(--animation-duration-normal) var(--animation-easing);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Form Sections */
+    .form-section {
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .form-section.active {
+      display: block;
+    }
+
+    .form-section h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2rem;
+      color: var(--accent-lime);
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .section-number {
+      background: var(--accent-lime);
+      color: var(--primary-dark);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: var(--space-lg);
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: var(--space-xs);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .form-group .help-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: var(--space-xs);
+      font-style: italic;
+    }
+
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      padding: var(--space-sm) var(--space-md);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      color: var(--text-primary);
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      min-height: var(--touch-target);
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--accent-lime);
+      box-shadow: 0 0 0 2px rgba(211, 255, 0, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* Checkbox Groups */
+    .checkbox-group {
+      display: grid;
+      gap: var(--space-sm);
+      margin-top: var(--space-sm);
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .checkbox-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(211, 255, 0, 0.3);
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent-lime);
+    }
+
+    .checkbox-item.selected {
+      background: rgba(211, 255, 0, 0.1);
+      border-color: var(--accent-lime);
+    }
+
+    /* Radio Groups */
+    .radio-group {
+      display: grid;
+      gap: var(--space-sm);
+      margin-top: var(--space-sm);
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .radio-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(211, 255, 0, 0.3);
+    }
+
+    .radio-item input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent-lime);
+    }
+
+    .radio-item.selected {
+      background: rgba(211, 255, 0, 0.1);
+      border-color: var(--accent-lime);
+    }
+
+    /* File Upload */
+    .file-upload {
+      border: 2px dashed rgba(211, 255, 0, 0.3);
+      border-radius: 15px;
+      padding: var(--space-xl);
+      text-align: center;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+    }
+
+    .file-upload:hover {
+      border-color: var(--accent-lime);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .file-upload-icon {
+      font-size: 3rem;
+      color: var(--accent-lime);
+      margin-bottom: var(--space-sm);
+    }
+
+    .file-upload input[type="file"] {
+      display: none;
+    }
+
+    /* Required Fields */
+    .required {
+      color: var(--terracotta);
+    }
+
+    /* Validation */
+    .error {
+      border-color: var(--terracotta) !important;
+      box-shadow: 0 0 0 2px rgba(226, 114, 91, 0.2) !important;
+    }
+
+    .error-message {
+      color: var(--terracotta);
+      font-size: 0.85rem;
+      margin-top: var(--space-xs);
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    /* Navigation Buttons */
+    .form-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--space-xl);
+      gap: var(--space-sm);
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-lime);
+      color: var(--primary-dark);
+      border: none;
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: 33px;
+      font-weight: 600;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      font-family: 'Space Mono', monospace;
+      min-height: var(--touch-target);
+      min-width: 120px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .btn:hover {
+      background: var(--accent-lime-dim);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(211, 255, 0, 0.3);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent-lime);
+      border: 1px solid rgba(211, 255, 0, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(211, 255, 0, 0.1);
+      border-color: rgba(211, 255, 0, 0.8);
+      color: var(--text-primary);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 100px var(--space-md) var(--space-xl);
+      }
+
+      .form-hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .form-container {
+        padding: var(--space-lg);
+      }
+
+      .form-navigation {
+        flex-direction: column;
+        gap: var(--space-sm);
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .checkbox-group, .radio-group {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .form-hero h1 {
+        font-size: 2rem;
+      }
+
+      .form-container {
+        padding: var(--space-md);
+        border-radius: 20px;
+      }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (prefers-contrast: high) {
+      .form-input, .form-textarea, .form-select {
+        border-width: 2px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Floating Navigation Pill -->
+  <nav class="floating-nav">
+    <a href="index.html" class="logo">Homme Made</a>
+    <div class="nav-links">
+      <a href="index.html#services" class="nav-link">Services</a>
+      <a href="index.html#philosophy" class="nav-link">Philosophy</a>
+      <a href="index.html#work" class="nav-link">Work</a>
+      <a href="pricing-menu.html" class="nav-link">Pricing</a>
+      <a href="index.html#contact" class="nav-link">Contact</a>
+    </div>
+    <div class="hamburger" id="hamburgerBtn">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#services" class="nav-link">Services</a>
+    <a href="index.html#philosophy" class="nav-link">Philosophy</a>
+    <a href="index.html#work" class="nav-link">Work</a>
+    <a href="pricing-menu.html" class="nav-link">Pricing</a>
+    <a href="index.html#contact" class="nav-link">Contact</a>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Hero Section -->
+    <div class="form-hero">
+      <h1>Before We Build Together</h1>
+      <p>This isn't your average brand brief. It's the start of a real transformation. Think of this as us stepping into your worldbefore we help you reshape it.</p>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">Section 1 of 5: Who You Are</div>
+    </div>
+
+    <!-- Form Container -->
+    <form class="form-container" id="onboardingForm">
+      
+      <!-- Section 1: Who You Are -->
+      <div class="form-section active" id="section1">
+        <h2><span class="section-number">1</span>Who You Are</h2>
+        
+        <div class="form-group">
+          <label for="name">Your Name <span class="required">*</span></label>
+          <input type="text" id="name" name="name" class="form-input" required>
+          <div class="error-message" id="nameError">Please enter your name</div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email <span class="required">*</span></label>
+          <input type="email" id="email" name="email" class="form-input" required>
+          <div class="error-message" id="emailError">Please enter a valid email address</div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone (Optional)</label>
+          <input type="tel" id="phone" name="phone" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label for="brandName">Your Brand or Business Name <span class="required">*</span></label>
+          <input type="text" id="brandName" name="brandName" class="form-input" required>
+          <div class="error-message" id="brandNameError">Please enter your brand or business name</div>
+        </div>
+
+        <div class="form-group">
+          <label for="onlinePresence">Where can we find you online?</label>
+          <div class="help-text">Website, IG, TikTok, LinkedInany portals you're proud of.</div>
+          <textarea id="onlinePresence" name="onlinePresence" class="form-textarea" rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="industry">What industry/space do you play in?</label>
+          <div class="help-text">Be literal or poeticyour call.</div>
+          <input type="text" id="industry" name="industry" class="form-input">
+        </div>
+      </div>
+
+      <!-- Section 2: What You're Hoping For -->
+      <div class="form-section" id="section2">
+        <h2><span class="section-number">2</span>What You're Hoping For</h2>
+        
+        <div class="form-group">
+          <label for="whyNow">Why now? Why us? <span class="required">*</span></label>
+          <div class="help-text">What brought you to Homme Made? What made this the moment?</div>
+          <textarea id="whyNow" name="whyNow" class="form-textarea" rows="5" required></textarea>
+          <div class="error-message" id="whyNowError">Please tell us why you're here</div>
+        </div>
+
+        <div class="form-group">
+          <label for="successMetrics">If we nailed this project, how would you know? <span class="required">*</span></label>
+          <div class="help-text">List real outcomes. More leads? Less chaos? Visuals that slap?</div>
+          <textarea id="successMetrics" name="successMetrics" class="form-textarea" rows="5" required></textarea>
+          <div class="error-message" id="successMetricsError">Please describe what success looks like</div>
+        </div>
+
+        <div class="form-group">
+          <label>What are you struggling with most? (Pick your top 3) <span class="required">*</span></label>
+          <div class="help-text">Select up to 3 options</div>
+          <div class="checkbox-group" id="strugglesGroup">
+            <label class="checkbox-item">
+              <input type="checkbox" name="struggles" value="branding-scattered">
+              <span>My branding is all over the place</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="struggles" value="story-articulation">
+              <span>I need help articulating my story</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="struggles" value="wrong-audience">
+              <span>I'm attracting the wrong audience</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="struggles" value="visuals-dont-feel-me">
+              <span>My visuals don't feel "me"</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="struggles" value="automation-systems">
+              <span>I need automation/systems that save me time</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="struggles" value="prioritization">
+              <span>I don't know what to prioritize</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="struggles" value="overwhelmed">
+              <span>I'm just overwhelmed</span>
+            </label>
+          </div>
+          <div class="form-group" id="otherStruggleGroup" style="margin-top: var(--space-sm); display: none;">
+            <label for="otherStruggle">Other (please specify)</label>
+            <input type="text" id="otherStruggle" name="otherStruggle" class="form-input">
+          </div>
+          <div class="error-message" id="strugglesError">Please select at least one struggle</div>
+        </div>
+      </div>
+
+      <!-- Section 3: The Vibe Check -->
+      <div class="form-section" id="section3">
+        <h2><span class="section-number">3</span>The Vibe Check</h2>
+        
+        <div class="form-group">
+          <label for="brandVoice">If your brand had a voice, what would it sound like?</label>
+          <div class="help-text">Think: "calm & cinematic," "playful but sharp," "earthy mystic tech," etc.</div>
+          <input type="text" id="brandVoice" name="brandVoice" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label for="brandTone">Give us 5 words that describe your ideal brand tone.</label>
+          <div class="help-text">E.g. Disarming. Poetic. Grounded. Unexpected. Witty.</div>
+          <input type="text" id="brandTone" name="brandTone" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label for="avoidances">What don't you want?</label>
+          <div class="help-text">Any colors, fonts, words, trends, vibes, or types of work that are a no-go?</div>
+          <textarea id="avoidances" name="avoidances" class="form-textarea" rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="aestheticReferences">Drop any aesthetic references you love.</label>
+          <div class="help-text">Other brands, IG accounts, albums, movies, art& we want the moodboard of your soul.</div>
+          <textarea id="aestheticReferences" name="aestheticReferences" class="form-textarea" rows="5"></textarea>
+        </div>
+      </div>
+
+      <!-- Section 4: Your Offer + People -->
+      <div class="form-section" id="section4">
+        <h2><span class="section-number">4</span>Your Offer + People</h2>
+        
+        <div class="form-group">
+          <label for="offering">What do you sell or offerand how is it different?</label>
+          <textarea id="offering" name="offering" class="form-textarea" rows="5"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="valueProvision">How do you provide value to your people?</label>
+          <textarea id="valueProvision" name="valueProvision" class="form-textarea" rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="dreamAudience">Who's your dream audience or client?</label>
+          <textarea id="dreamAudience" name="dreamAudience" class="form-textarea" rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="feedback">What compliments or feedback do you hear a lot?</label>
+          <div class="help-text">What do people thank you for?</div>
+          <textarea id="feedback" name="feedback" class="form-textarea" rows="4"></textarea>
+        </div>
+      </div>
+
+      <!-- Section 5: Materials + Next Steps -->
+      <div class="form-section" id="section5">
+        <h2><span class="section-number">5</span>Materials + Next Steps</h2>
+        
+        <div class="form-group">
+          <label for="materials">Upload anything you think we should see.</label>
+          <div class="help-text">Decks, PDFs, sketches, logos, brand audits, screenshotsanything goes.</div>
+          <div class="file-upload" onclick="document.getElementById('materialsFile').click()">
+            <div class="file-upload-icon">=�</div>
+            <p>Click to upload files or drag and drop</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Max file size: 10MB. Supported formats: PDF, PNG, JPG, GIF, DOC, DOCX</p>
+            <input type="file" id="materialsFile" name="materials" multiple accept=".pdf,.png,.jpg,.jpeg,.gif,.doc,.docx">
+          </div>
+          <div id="fileList" style="margin-top: var(--space-sm);"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="additionalInfo">Is there anything we didn't ask that we should have?</label>
+          <textarea id="additionalInfo" name="additionalInfo" class="form-textarea" rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>How would you prefer we communicate with you? <span class="required">*</span></label>
+          <div class="radio-group" id="communicationGroup">
+            <label class="radio-item">
+              <input type="radio" name="communication" value="email" required>
+              <span>Email</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="communication" value="text" required>
+              <span>Text</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="communication" value="slack" required>
+              <span>Slack</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="communication" value="voice-note" required>
+              <span>Voice note / Loom</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="communication" value="phone" required>
+              <span>Phone call</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="communication" value="carrier-pigeon" required>
+              <span>Carrier pigeon (we'll look into it)</span>
+            </label>
+          </div>
+          <div class="error-message" id="communicationError">Please select a communication preference</div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="form-navigation">
+        <button type="button" class="btn btn-secondary" id="prevBtn" onclick="changeSection(-1)" disabled>Previous</button>
+        <div style="flex: 1;"></div>
+        <button type="button" class="btn" id="nextBtn" onclick="changeSection(1)">Next Section</button>
+        <button type="submit" class="btn" id="submitBtn" style="display: none;">Submit Application</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Form Analytics Class
+    class FormAnalytics {
+      constructor() {
+        this.startTime = Date.now();
+        this.currentSection = 1;
+        this.sectionTimes = {};
+        this.interactions = [];
+        this.sectionStartTime = Date.now();
+        
+        // Initialize analytics
+        this.trackEvent('form_started', {
+          timestamp: this.startTime,
+          user_agent: navigator.userAgent,
+          viewport_width: window.innerWidth,
+          viewport_height: window.innerHeight
+        });
+      }
+
+      trackEvent(event, data = {}) {
+        const eventData = {
+          event,
+          timestamp: Date.now(),
+          session_duration: Date.now() - this.startTime,
+          current_section: this.currentSection,
+          ...data
+        };
+
+        // Send to Google Analytics if available
+        if (typeof gtag !== 'undefined') {
+          gtag('event', event, eventData);
+        }
+
+        // Send to custom analytics endpoint (optional)
+        // this.sendToCustomAnalytics(eventData);
+        
+        // Store in local analytics array
+        this.interactions.push(eventData);
+        
+        console.log('Analytics Event:', eventData);
+      }
+
+      trackSectionChange(newSection, oldSection) {
+        const sectionTime = Date.now() - this.sectionStartTime;
+        this.sectionTimes[oldSection] = sectionTime;
+        
+        this.trackEvent('section_changed', {
+          from_section: oldSection,
+          to_section: newSection,
+          section_time: sectionTime,
+          completion_rate: this.calculateCompletionRate(oldSection)
+        });
+        
+        this.currentSection = newSection;
+        this.sectionStartTime = Date.now();
+      }
+
+      trackFieldInteraction(fieldName, fieldType, interactionType) {
+        this.trackEvent('field_interaction', {
+          field_name: fieldName,
+          field_type: fieldType,
+          interaction_type: interactionType
+        });
+      }
+
+      trackValidationError(fieldName, errorType) {
+        this.trackEvent('validation_error', {
+          field_name: fieldName,
+          error_type: errorType
+        });
+      }
+
+      trackFormSubmission(formData) {
+        const totalTime = Date.now() - this.startTime;
+        this.trackEvent('form_submitted', {
+          total_time: totalTime,
+          section_times: this.sectionTimes,
+          total_interactions: this.interactions.length,
+          form_completion_rate: 1.0
+        });
+      }
+
+      calculateCompletionRate(section) {
+        const sectionFields = {
+          1: ['name', 'email', 'brandName'],
+          2: ['whyNow', 'successMetrics'],
+          3: [],
+          4: [],
+          5: ['communication']
+        };
+        
+        const requiredFields = sectionFields[section] || [];
+        if (requiredFields.length === 0) return 1.0;
+        
+        const completedFields = requiredFields.filter(fieldName => {
+          const field = document.getElementById(fieldName);
+          return field && field.value.trim() !== '';
+        });
+        
+        return completedFields.length / requiredFields.length;
+      }
+
+      // Optional: Send to custom analytics endpoint
+      sendToCustomAnalytics(data) {
+        fetch('/api/form-analytics', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        }).catch(err => console.log('Analytics endpoint not available:', err));
+      }
+    }
+
+    // Initialize analytics
+    const analytics = new FormAnalytics();
+
+    // Form State Management
+    let currentSection = 1;
+    const totalSections = 5;
+    let formData = {};
+
+    // Progress tracking
+    function updateProgress() {
+      const progress = (currentSection / totalSections) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+      
+      const sectionNames = [
+        "Who You Are",
+        "What You're Hoping For", 
+        "The Vibe Check",
+        "Your Offer + People",
+        "Materials + Next Steps"
+      ];
+      
+      document.getElementById('progressText').textContent = 
+        `Section ${currentSection} of ${totalSections}: ${sectionNames[currentSection - 1]}`;
+    }
+
+    // Section Navigation
+    function changeSection(direction) {
+      const oldSection = currentSection;
+      
+      if (direction === 1 && !validateCurrentSection()) {
+        return;
+      }
+      
+      const newSection = currentSection + direction;
+      
+      if (newSection < 1 || newSection > totalSections) {
+        return;
+      }
+      
+      // Hide current section
+      document.getElementById(`section${currentSection}`).classList.remove('active');
+      
+      // Show new section
+      currentSection = newSection;
+      document.getElementById(`section${currentSection}`).classList.add('active');
+      
+      // Track section change
+      analytics.trackSectionChange(currentSection, oldSection);
+      
+      // Update UI
+      updateProgress();
+      updateNavigationButtons();
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateNavigationButtons() {
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      prevBtn.disabled = currentSection === 1;
+      
+      if (currentSection === totalSections) {
+        nextBtn.style.display = 'none';
+        submitBtn.style.display = 'block';
+      } else {
+        nextBtn.style.display = 'block';
+        submitBtn.style.display = 'none';
+      }
+    }
+
+    // Form Validation
+    function validateCurrentSection() {
+      let isValid = true;
+      
+      // Clear previous errors
+      document.querySelectorAll('.error-message').forEach(msg => {
+        msg.classList.remove('show');
+      });
+      document.querySelectorAll('.error').forEach(field => {
+        field.classList.remove('error');
+      });
+      
+      if (currentSection === 1) {
+        isValid = validateSection1() && isValid;
+      } else if (currentSection === 2) {
+        isValid = validateSection2() && isValid;
+      } else if (currentSection === 5) {
+        isValid = validateSection5() && isValid;
+      }
+      
+      return isValid;
+    }
+
+    function validateSection1() {
+      let isValid = true;
+      
+      const name = document.getElementById('name');
+      if (!name.value.trim()) {
+        showError('name', 'nameError', 'Please enter your name');
+        analytics.trackValidationError('name', 'required_field_empty');
+        isValid = false;
+      }
+      
+      const email = document.getElementById('email');
+      if (!email.value.trim()) {
+        showError('email', 'emailError', 'Please enter an email address');
+        analytics.trackValidationError('email', 'required_field_empty');
+        isValid = false;
+      } else if (!isValidEmail(email.value)) {
+        showError('email', 'emailError', 'Please enter a valid email address');
+        analytics.trackValidationError('email', 'invalid_format');
+        isValid = false;
+      }
+      
+      const brandName = document.getElementById('brandName');
+      if (!brandName.value.trim()) {
+        showError('brandName', 'brandNameError', 'Please enter your brand or business name');
+        analytics.trackValidationError('brandName', 'required_field_empty');
+        isValid = false;
+      }
+      
+      return isValid;
+    }
+
+    function validateSection2() {
+      let isValid = true;
+      
+      const whyNow = document.getElementById('whyNow');
+      if (!whyNow.value.trim()) {
+        showError('whyNow', 'whyNowError', 'Please tell us why you\'re here');
+        analytics.trackValidationError('whyNow', 'required_field_empty');
+        isValid = false;
+      }
+      
+      const successMetrics = document.getElementById('successMetrics');
+      if (!successMetrics.value.trim()) {
+        showError('successMetrics', 'successMetricsError', 'Please describe what success looks like');
+        analytics.trackValidationError('successMetrics', 'required_field_empty');
+        isValid = false;
+      }
+      
+      const checkedStruggles = document.querySelectorAll('input[name="struggles"]:checked');
+      if (checkedStruggles.length === 0) {
+        document.getElementById('strugglesError').classList.add('show');
+        analytics.trackValidationError('struggles', 'no_options_selected');
+        isValid = false;
+      }
+      
+      return isValid;
+    }
+
+    function validateSection5() {
+      let isValid = true;
+      
+      const communication = document.querySelector('input[name="communication"]:checked');
+      if (!communication) {
+        document.getElementById('communicationError').classList.add('show');
+        analytics.trackValidationError('communication', 'no_option_selected');
+        isValid = false;
+      }
+      
+      return isValid;
+    }
+
+    function showError(fieldId, errorId, message) {
+      const field = document.getElementById(fieldId);
+      const error = document.getElementById(errorId);
+      
+      field.classList.add('error');
+      error.textContent = message;
+      error.classList.add('show');
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    // Checkbox limit handling
+    function handleCheckboxLimit() {
+      const checkboxes = document.querySelectorAll('input[name="struggles"]');
+      const checked = document.querySelectorAll('input[name="struggles"]:checked');
+      
+      if (checked.length >= 3) {
+        checkboxes.forEach(cb => {
+          if (!cb.checked) {
+            cb.disabled = true;
+            cb.parentElement.style.opacity = '0.5';
+          }
+        });
+      } else {
+        checkboxes.forEach(cb => {
+          cb.disabled = false;
+          cb.parentElement.style.opacity = '1';
+        });
+      }
+    }
+
+    // File upload handling
+    function handleFileUpload() {
+      const fileInput = document.getElementById('materialsFile');
+      const fileList = document.getElementById('fileList');
+      
+      fileInput.addEventListener('change', function(e) {
+        fileList.innerHTML = '';
+        
+        Array.from(e.target.files).forEach(file => {
+          const fileItem = document.createElement('div');
+          fileItem.style.cssText = `
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-xs);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: var(--space-xs);
+          `;
+          
+          fileItem.innerHTML = `
+            <span style="font-size: 0.9rem;">${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+            <button type="button" onclick="removeFile('${file.name}')" style="background: var(--terracotta); color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; cursor: pointer;">Remove</button>
+          `;
+          
+          fileList.appendChild(fileItem);
+        });
+        
+        analytics.trackEvent('files_uploaded', {
+          file_count: e.target.files.length,
+          total_size: Array.from(e.target.files).reduce((sum, file) => sum + file.size, 0)
+        });
+      });
+    }
+
+    function removeFile(fileName) {
+      const fileInput = document.getElementById('materialsFile');
+      const dt = new DataTransfer();
+      
+      Array.from(fileInput.files).forEach(file => {
+        if (file.name !== fileName) {
+          dt.items.add(file);
+        }
+      });
+      
+      fileInput.files = dt.files;
+      handleFileUpload();
+    }
+
+    // Form submission
+    async function handleSubmit(e) {
+      e.preventDefault();
+      
+      if (!validateCurrentSection()) {
+        return;
+      }
+      
+      // Show loading state
+      const submitBtn = document.getElementById('submitBtn');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Submitting...';
+      submitBtn.disabled = true;
+      
+      try {
+        // Collect form data
+        const formData = new FormData(document.getElementById('onboardingForm'));
+        const data = Object.fromEntries(formData);
+        
+        // Add checkbox arrays
+        data.struggles = Array.from(document.querySelectorAll('input[name="struggles"]:checked')).map(cb => cb.value);
+        
+        // Handle file uploads first
+        const fileInput = document.getElementById('materialsFile');
+        if (fileInput.files.length > 0) {
+          try {
+            const uploadedFiles = await uploadFiles(fileInput.files);
+            data.files = uploadedFiles;
+          } catch (error) {
+            console.error('File upload failed:', error);
+            // Continue without files - don't fail the entire submission
+            data.files = [];
+          }
+        }
+        
+        // Submit form data
+        const response = await fetch('/api/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+          analytics.trackFormSubmission(data);
+          
+          // Show success message
+          showSuccessMessage(result.leadId);
+          
+          // Clear form data from localStorage
+          localStorage.removeItem('onboarding_form_data');
+          
+        } else {
+          throw new Error(result.message || 'Submission failed');
+        }
+        
+      } catch (error) {
+        console.error('Form submission error:', error);
+        analytics.trackEvent('form_submission_error', { error: error.message });
+        
+        // Show error message
+        showErrorMessage(error.message);
+        
+      } finally {
+        // Reset button
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    }
+    
+    // Upload files to Vercel Blob
+    async function uploadFiles(files) {
+      const uploadedFiles = [];
+      
+      for (const file of files) {
+        try {
+          // Convert file to base64 for upload
+          const fileData = await fileToBase64(file);
+          
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              file: fileData,
+              fileName: file.name
+            })
+          });
+          
+          const result = await response.json();
+          
+          if (response.ok && result.success) {
+            uploadedFiles.push(result.file);
+          } else {
+            throw new Error(result.message || 'File upload failed');
+          }
+          
+        } catch (error) {
+          console.error(`Failed to upload ${file.name}:`, error);
+          // Continue with other files
+        }
+      }
+      
+      return uploadedFiles;
+    }
+    
+    // Convert file to base64
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+    
+    // Show success message
+    function showSuccessMessage(leadId) {
+      const container = document.querySelector('.container');
+      container.innerHTML = `
+        <div class="form-hero" style="text-align: center; padding: 4rem 2rem;">
+          <h1 style="color: var(--accent-lime); margin-bottom: 2rem;">🎉 Thank You!</h1>
+          <div class="glass" style="max-width: 500px; margin: 0 auto; padding: 2rem;">
+            <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+              Your onboarding form has been submitted successfully!
+            </p>
+            <p style="margin-bottom: 1.5rem;">
+              We've received your information and will be in touch soon to discuss your project.
+            </p>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2rem;">
+              Reference ID: ${leadId}
+            </p>
+            <a href="index.html" class="cta-button glass-primary">
+              Return to Homepage
+            </a>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Show error message
+    function showErrorMessage(message) {
+      const errorDiv = document.createElement('div');
+      errorDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--terracotta);
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        z-index: 9999;
+        max-width: 300px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      `;
+      errorDiv.innerHTML = `
+        <strong>Submission Error</strong><br>
+        ${message}<br>
+        <small>Please try again or contact us directly.</small>
+      `;
+      
+      document.body.appendChild(errorDiv);
+      
+      // Remove after 5 seconds
+      setTimeout(() => {
+        errorDiv.remove();
+      }, 5000);
+    }
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize UI
+      updateProgress();
+      updateNavigationButtons();
+      handleFileUpload();
+      
+      // Checkbox interactions
+      document.querySelectorAll('input[name="struggles"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          handleCheckboxLimit();
+          this.parentElement.classList.toggle('selected', this.checked);
+          
+          analytics.trackFieldInteraction('struggles', 'checkbox', this.checked ? 'checked' : 'unchecked');
+        });
+      });
+      
+      // Radio button interactions
+      document.querySelectorAll('input[name="communication"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          document.querySelectorAll('.radio-item').forEach(item => {
+            item.classList.remove('selected');
+          });
+          this.parentElement.classList.add('selected');
+          
+          analytics.trackFieldInteraction('communication', 'radio', 'selected');
+        });
+      });
+      
+      // Track field interactions
+      document.querySelectorAll('input, textarea, select').forEach(field => {
+        field.addEventListener('focus', function() {
+          analytics.trackFieldInteraction(this.name || this.id, this.type, 'focus');
+        });
+        
+        field.addEventListener('blur', function() {
+          analytics.trackFieldInteraction(this.name || this.id, this.type, 'blur');
+        });
+      });
+      
+      // Form submission
+      document.getElementById('onboardingForm').addEventListener('submit', handleSubmit);
+      
+      // Save form data periodically
+      setInterval(() => {
+        const formData = new FormData(document.getElementById('onboardingForm'));
+        localStorage.setItem('onboarding_form_data', JSON.stringify(Object.fromEntries(formData)));
+      }, 30000); // Save every 30 seconds
+      
+      // Load saved form data
+      const savedData = localStorage.getItem('onboarding_form_data');
+      if (savedData) {
+        try {
+          const data = JSON.parse(savedData);
+          Object.keys(data).forEach(key => {
+            const field = document.getElementById(key) || document.querySelector(`[name="${key}"]`);
+            if (field && data[key]) {
+              field.value = data[key];
+            }
+          });
+        } catch (e) {
+          console.log('Could not restore form data');
+        }
+      }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === 'ArrowLeft' && currentSection > 1) {
+          e.preventDefault();
+          changeSection(-1);
+        } else if (e.key === 'ArrowRight' && currentSection < totalSections) {
+          e.preventDefault();
+          changeSection(1);
+        }
+      }
+    });
+  </script>
+  
+  <script src="js/header-nav.js"></script>
+</body>
+</html>
