@@ -1,6 +1,7 @@
 {
   "name": "homme-made-onboarding",
   "version": "1.0.0",
+  "type": "module",
   "description": "Homme Made onboarding system with CRM integration and file upload",
   "main": "index.html",
   "scripts": {
