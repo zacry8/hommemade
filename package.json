@@ -14,7 +14,7 @@
     "nodemailer": "^6.9.7"
   },
   "devDependencies": {
-    "vercel": "^32.5.0"
+    "vercel": "^32.7.2"
   },
   "engines": {
     "node": ">=18.0.0"
