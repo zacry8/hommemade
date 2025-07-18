@@ -1,17 +1,11 @@
 /**
- * Form Submission API Route - 2025 Vercel Blob & Resend Standards
+ * Form Submission API Route - Simple & Working
  * 
- * Follows mind-bank principles:
- * - "Functional Over Flash" - Direct blob storage, no complexity
- * - "Secure & Private" - Your data stays in your Vercel account
- * - "Free to Run & Operate" - Uses Vercel's generous free tier
- * - "Community-Aligned" - User-focused experience
- * 
- * 2025 Features:
- * - Enhanced Vercel Blob with multipart uploads
- * - Resend-optimized email delivery
- * - Idempotency for reliable operations
- * - Progress tracking capabilities
+ * Basic functionality:
+ * - Store form data in Vercel Blob
+ * - Send email notification via Resend
+ * - Handle file uploads
+ * - Return proper JSON responses
  */
 
 import { put } from '@vercel/blob';
@@ -92,22 +86,14 @@ export default async function handler(req, res) {
       ...sanitizedData
     };
 
-    // Store submission in Vercel Blob with 2025 standards
+    // Store submission in Vercel Blob (simple)
     const filename = `submissions/${submissionId}.json`;
     const submissionJson = JSON.stringify(submissionData, null, 2);
     
     const blob = await put(filename, submissionJson, {
       access: 'private',
       addRandomSuffix: false,
-      token: config.BLOB_READ_WRITE_TOKEN,
-      cacheControlMaxAge: 3600, // 1 hour browser cache
-      multipart: true, // Enable multipart for reliability
-      allowOverwrite: false, // Prevent overwrites (2025 safety)
-      onUploadProgress: (event) => {
-        if (config.DEBUG) {
-          console.log(`📊 Submission upload: ${event.percentage?.toFixed(1)}%`);
-        }
-      }
+      token: config.BLOB_READ_WRITE_TOKEN
     });
 
     console.log('💾 Submission stored in blob:', {
@@ -116,31 +102,24 @@ export default async function handler(req, res) {
       pathname: blob.pathname
     });
 
-    // Send email notification with 2025 reliability
+    // Send email notification (simple)
     if (config.ENABLE_EMAIL_NOTIFICATIONS) {
       try {
         const { sendNotification } = await import('../lib/email.js');
-        await sendNotification(sanitizedData, submissionId, {
-          idempotencyKey: `submission-${submissionId}`, // 2025 idempotency
-          retryOnFailure: true
-        });
-        console.log('📧 Email notification sent with idempotency');
+        await sendNotification(sanitizedData, submissionId);
+        console.log('📧 Email notification sent');
       } catch (error) {
         console.error('❌ Email notification error:', error);
         // Don't fail the submission if email fails
       }
     }
 
-    // Return success response with 2025 format
+    // Return success response
     res.status(200).json({
       success: true,
       message: 'Form submitted successfully',
-      data: {
-        submissionId: submissionId,
-        timestamp: timestamp,
-        blobUrl: blob.url,
-        size: blob.size || null
-      }
+      submissionId: submissionId,
+      timestamp: timestamp
     });
 
   } catch (error) {

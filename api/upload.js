@@ -1,16 +1,11 @@
 /**
- * File Upload API Route - Vercel Blob integration (2025 Standards)
+ * File Upload API Route - Simple & Working
  * 
- * Follows mind-bank principles:
- * - "Secure & Private" - Private file storage with access controls
- * - "Free to Run & Operate" - Uses Vercel's native blob storage
- * - "No dark patterns" - Transparent file handling
- * 
- * 2025 Features:
- * - Multipart uploads for reliability
- * - Upload progress tracking
- * - Cancellable uploads with AbortSignal
- * - Enhanced error handling
+ * Basic file upload functionality:
+ * - Store files in Vercel Blob
+ * - Private access for security
+ * - File type and size validation
+ * - Return file URL for form submission
  */
 
 import { put } from '@vercel/blob';
@@ -45,8 +40,8 @@ export default async function handler(req, res) {
       });
     }
 
-    // Get the file and options from the request
-    const { file, fileName, abortSignal } = req.body;
+    // Get the file from the request
+    const { file, fileName } = req.body;
     
     if (!file || !fileName) {
       return res.status(400).json({ 
@@ -79,21 +74,11 @@ export default async function handler(req, res) {
     const submissionId = req.body.submissionId || timestamp.toString();
     const uniqueFileName = `uploads/${submissionId}-${fileName}`;
 
-    // Upload to Vercel Blob with 2025 standards
+    // Upload to Vercel Blob (simple)
     const blob = await put(uniqueFileName, file, {
-      access: 'private', // Private access for user privacy
-      addRandomSuffix: false, // Use our own naming scheme
-      token: config.BLOB_READ_WRITE_TOKEN,
-      cacheControlMaxAge: 3600, // 1 hour browser cache
-      multipart: true, // Enable multipart for reliability and large files
-      allowOverwrite: false, // Prevent accidental overwrites (2025 default)
-      ...(abortSignal && { abortSignal }), // Support cancellable uploads
-      onUploadProgress: (event) => {
-        // Progress tracking for 2025 UX standards
-        if (config.DEBUG) {
-          console.log(`📊 Upload progress: ${event.percentage?.toFixed(1)}% (${event.loaded}/${event.total} bytes)`);
-        }
-      }
+      access: 'private',
+      addRandomSuffix: false,
+      token: config.BLOB_READ_WRITE_TOKEN
     });
 
     // Log successful upload (without sensitive data)
@@ -105,17 +90,15 @@ export default async function handler(req, res) {
       timestamp: new Date().toISOString()
     });
 
-    // Return success response with 2025 format
+    // Return success response
     res.status(200).json({
       success: true,
-      message: 'File uploaded successfully',
       file: {
         url: blob.url,
         fileName: fileName,
         uniqueFileName: uniqueFileName,
         pathname: blob.pathname,
-        uploadedAt: new Date().toISOString(),
-        size: blob.size || null // Include size if available
+        uploadedAt: new Date().toISOString()
       }
     });
 
@@ -130,11 +113,11 @@ export default async function handler(req, res) {
   }
 }
 
-// Configure API route for larger file uploads (2025 standards)
+// Configure API route for file uploads
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '50mb', // Increased for 2025 standards
+      sizeLimit: '50mb',
     },
   },
 };
