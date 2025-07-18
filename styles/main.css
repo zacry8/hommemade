@@ -1,0 +1,866 @@
+:root {
+      --primary-dark: #0a0a0a;
+      --secondary-dark: #101010;
+      --accent-lime: #d3ff00;
+      --accent-lime-dim: #a8cc00;
+      --text-primary: #f1f1f1;
+      --text-secondary: #ffffff;
+      --text-muted: #808080;
+      --border-dark: rgba(211, 255, 0, 0.2);
+      --shadow-dark: rgba(0, 0, 0, 0.3);
+      --shadow-medium: rgba(0, 0, 0, 0.4);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --terracotta: #E2725B;
+      --terracotta-dim: #C85A47;
+      --terracotta-alpha: rgba(226, 114, 91, 0.15);
+      --terracotta-alpha-hover: rgba(226, 114, 91, 0.25);
+      --terracotta-border: rgba(226, 114, 91, 0.3);
+      --terracotta-border-hover: rgba(226, 114, 91, 0.5);
+      
+      /* Spacing System */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2rem;
+      --space-xl: 3rem;
+      --space-2xl: 5rem;
+      
+      /* Touch Targets */
+      --touch-target: 44px;
+      
+      /* Future-Proofed Hover Gradient System */
+      --hover-gradient-primary: #d3ff00;
+      --hover-gradient-secondary: transparent;
+      --hover-gradient-transition: 0.3s ease;
+      --hover-gradient-size: closest-corner;
+      
+      /* Gradient Intensity Variants */
+      --hover-gradient-subtle: rgba(211, 255, 0, 0.3);
+      --hover-gradient-intense: #d3ff00;
+      --hover-gradient-vibrant: #d3ff00;
+      
+      /* Glass Morphism Enhanced Variables */
+      --glass-bg-hover: #101010;
+      --glass-border-hover: rgba(211, 255, 0, 0.4);
+      --glass-backdrop-blur: 16px;
+      --glass-backdrop-blur-enhanced: 20px;
+      
+      /* Performance & Animation */
+      --animation-duration-fast: 0.15s;
+      --animation-duration-normal: 0.3s;
+      --animation-duration-slow: 0.5s;
+      --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+      --animation-easing-bouncy: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Space Mono', monospace;
+      background: var(--primary-dark);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    .hero {
+      height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 var(--space-lg);
+      backdrop-filter: blur(4px);
+      position: relative;
+    }
+
+    .hero h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 3.5rem;
+      color: var(--accent-lime);
+      margin-bottom: var(--space-sm);
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      max-width: 600px;
+      margin: 0 auto var(--space-lg);
+    }
+
+    section {
+      padding: var(--space-2xl) var(--space-lg);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Enhanced Glass Morphism Base */
+    .glass {
+      background: var(--secondary-dark);
+      border: 1px solid var(--border-dark);
+      backdrop-filter: blur(var(--glass-backdrop-blur));
+      -webkit-backdrop-filter: blur(var(--glass-backdrop-blur));
+      border-radius: 33px;
+      padding: var(--space-lg);
+      margin-bottom: var(--space-xl);
+      box-shadow: 0 8px 32px var(--shadow-dark);
+      transition: all var(--animation-duration-normal) var(--animation-easing);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 48px var(--shadow-medium);
+    }
+
+    /* Glass Terracotta Variant for Cards */
+    .glass-terracotta {
+      background: linear-gradient(135deg, 
+        var(--secondary-dark) 0%, 
+        rgba(226, 114, 91, 0.08) 100%);
+      border: 1px solid var(--terracotta-border);
+      backdrop-filter: blur(var(--glass-backdrop-blur));
+      -webkit-backdrop-filter: blur(var(--glass-backdrop-blur));
+      border-radius: 33px;
+      padding: var(--space-lg);
+      margin-bottom: var(--space-xl);
+      box-shadow: 
+        0 8px 32px var(--shadow-dark),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all var(--animation-duration-normal) var(--animation-easing);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-terracotta:hover {
+      transform: translateY(-2px);
+      border-color: var(--terracotta-border-hover);
+      box-shadow: 
+        0 16px 48px var(--shadow-medium),
+        0 0 20px var(--terracotta-alpha),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    /* Future-Proofed Hover Gradient System */
+    .hover-gradient {
+      position: relative;
+      transition: var(--hover-gradient-transition);
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    /* Enhanced Border Refraction for Hover Gradient */
+    .hover-gradient.glass,
+    .hover-gradient.glass-terracotta {
+      /* Standard 1px border for glassmorphism */
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(var(--glass-backdrop-blur));
+      -webkit-backdrop-filter: blur(var(--glass-backdrop-blur));
+      position: relative;
+      overflow: hidden;
+      transition: 
+        all var(--animation-duration-normal) var(--animation-easing),
+        background var(--hover-gradient-transition),
+        border-color var(--hover-gradient-transition);
+    }
+
+    /* Terracotta-specific border for glass-terracotta */
+    .hover-gradient.glass-terracotta {
+      border-color: var(--terracotta-border);
+    }
+
+    /* Gradient background layer behind glass */
+    .hover-gradient.glass::after,
+    .hover-gradient.glass-terracotta::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--dynamic-gradient, transparent);
+      z-index: -1;
+      border-radius: inherit;
+      pointer-events: none;
+      transition: opacity var(--hover-gradient-transition);
+      opacity: 0;
+    }
+
+    /* Show gradient background on hover */
+    .hover-gradient.glass:hover::after,
+    .hover-gradient.glass-terracotta:hover::after {
+      opacity: 1;
+    }
+
+    /* Dark glassmorphism overlay for text readability */
+    .hover-gradient.glass::before,
+    .hover-gradient.glass-terracotta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      pointer-events: none;
+      z-index: 1;
+      border-radius: inherit;
+    }
+
+    /* Terracotta cards get slightly different overlay */
+    .hover-gradient.glass-terracotta::before {
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    /* Ensure content appears above overlay */
+    .hover-gradient.glass > *,
+    .hover-gradient.glass-terracotta > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Border gradient refraction on hover */
+    .hover-gradient.glass:hover {
+      border-color: rgba(211, 255, 0, 0.6);
+      background: var(--glass-bg-hover);
+      box-shadow: 
+        0 16px 48px var(--shadow-medium),
+        0 0 20px rgba(211, 255, 0, 0.3),
+        inset 0 1px 0 rgba(211, 255, 0, 0.2),
+        inset 0 -1px 0 rgba(211, 255, 0, 0.1);
+    }
+
+    /* Enhanced Glass Morphism Variant */
+    .hover-gradient.glass-enhanced {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(var(--glass-backdrop-blur-enhanced)) saturate(1.2);
+      -webkit-backdrop-filter: blur(var(--glass-backdrop-blur-enhanced)) saturate(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .hover-gradient.glass-enhanced:hover {
+      border-color: rgba(211, 255, 0, 0.3);
+      box-shadow: 
+        0 16px 64px rgba(0, 0, 0, 0.2),
+        0 0 30px rgba(211, 255, 0, 0.15),
+        inset 0 1px 0 rgba(211, 255, 0, 0.2);
+    }
+
+    /* Enhanced CTA Button with Hover Gradient */
+    .hover-gradient.cta-button {
+      transition: 
+        all var(--animation-duration-fast) var(--animation-easing),
+        background var(--hover-gradient-transition),
+        border-color var(--hover-gradient-transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Convert solid buttons to glass when using hover-gradient */
+    .hover-gradient.cta-button:not(.glass-primary):not(.secondary):not(.glass-hero):not(.glass-floating):not(.glass-apple):not(.glass-subtle) {
+      background: rgba(211, 255, 0, 0.2) !important;
+      color: var(--text-primary) !important;
+      border: 2px solid rgba(211, 255, 0, 0.5) !important;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+    }
+
+    .hover-gradient.cta-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .hover-gradient.cta-button.secondary {
+      background: transparent;
+      border: 2px solid var(--accent-lime);
+    }
+
+    .hover-gradient.cta-button.secondary:hover {
+      border-color: var(--hover-gradient-primary);
+      box-shadow: 
+        0 4px 16px rgba(211, 255, 0, 0.2),
+        0 0 15px rgba(211, 255, 0, 0.15);
+    }
+
+    /* Navigation Link Enhancement */
+    .hover-gradient.nav-link {
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      margin: -0.5rem -1rem;
+      transition: 
+        all var(--animation-duration-fast) var(--animation-easing),
+        background var(--hover-gradient-transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hover-gradient.nav-link:hover {
+      box-shadow: 0 0 15px rgba(211, 255, 0, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* Text Link Enhancement */
+    .hover-gradient.text-link {
+      border-radius: 6px;
+      padding: 0.25rem 0.5rem;
+      margin: -0.25rem -0.5rem;
+      transition: 
+        all var(--animation-duration-fast) var(--animation-easing),
+        background var(--hover-gradient-transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hover-gradient.text-link:hover {
+      text-shadow: 0 0 8px rgba(211, 255, 0, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* Intensity Variants */
+    .hover-gradient.subtle {
+      --hover-gradient-primary: var(--hover-gradient-subtle);
+    }
+
+    .hover-gradient.intense {
+      --hover-gradient-primary: var(--hover-gradient-intense);
+    }
+
+    .hover-gradient.vibrant {
+      --hover-gradient-primary: var(--hover-gradient-vibrant);
+      --hover-gradient-secondary: rgba(168, 204, 0, 0.1);
+    }
+
+    /* Animation Variants */
+    .hover-gradient.quick {
+      --hover-gradient-transition: var(--animation-duration-fast) var(--animation-easing);
+    }
+
+    .hover-gradient.smooth {
+      --hover-gradient-transition: var(--animation-duration-slow) var(--animation-easing);
+    }
+
+    .hover-gradient.bouncy {
+      --hover-gradient-transition: var(--animation-duration-normal) var(--animation-easing-bouncy);
+    }
+
+    /* Glow Effects */
+    .hover-gradient.glow {
+      box-shadow: 
+        0 8px 32px var(--shadow-dark),
+        0 0 0 1px var(--glass-border);
+    }
+
+    .hover-gradient.glow:hover {
+      box-shadow: 
+        0 8px 32px var(--shadow-dark),
+        0 0 20px rgba(211, 255, 0, 0.3),
+        0 0 0 1px var(--hover-gradient-primary);
+    }
+
+    .hover-gradient.border-glow {
+      border: 1px solid var(--glass-border);
+      transition: 
+        all var(--animation-duration-normal) var(--animation-easing),
+        background var(--hover-gradient-transition);
+    }
+
+    .hover-gradient.border-glow:hover {
+      border-color: var(--hover-gradient-primary);
+      box-shadow: 0 0 20px rgba(211, 255, 0, 0.2);
+    }
+
+    /* Data Attribute Configurations */
+    .hover-gradient[data-gradient-size="farthest-corner"] {
+      --hover-gradient-size: farthest-corner;
+    }
+
+    .hover-gradient[data-gradient-size="closest-side"] {
+      --hover-gradient-size: closest-side;
+    }
+
+    .hover-gradient[data-gradient-size="farthest-side"] {
+      --hover-gradient-size: farthest-side;
+    }
+
+    .hover-gradient[data-gradient-primary] {
+      --hover-gradient-primary: attr(data-gradient-primary);
+    }
+
+    .hover-gradient[data-gradient-secondary] {
+      --hover-gradient-secondary: attr(data-gradient-secondary);
+    }
+
+    /* Theme System */
+    .theme-lime {
+      --hover-gradient-primary: #d3ff00;
+      --hover-gradient-secondary: rgba(211, 255, 0, 0.1);
+    }
+
+    .theme-terracotta {
+      --hover-gradient-primary: var(--terracotta);
+      --hover-gradient-secondary: var(--terracotta-alpha);
+    }
+
+    .theme-lime-terracotta {
+      --hover-gradient-primary: #d3ff00;
+      --hover-gradient-secondary: var(--terracotta-alpha);
+    }
+
+    .theme-purple {
+      --hover-gradient-primary: #6600ff;
+      --hover-gradient-secondary: rgba(102, 0, 255, 0.1);
+    }
+
+    .theme-blue {
+      --hover-gradient-primary: #0066ff;
+      --hover-gradient-secondary: rgba(0, 102, 255, 0.1);
+    }
+
+    .theme-pink {
+      --hover-gradient-primary: #ff0066;
+      --hover-gradient-secondary: rgba(255, 0, 102, 0.1);
+    }
+
+    /* Existing Styles */
+    .section-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+      color: var(--accent-lime);
+    }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: var(--space-lg);
+    }
+
+    .pillars h3 {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      margin-bottom: var(--space-xs);
+    }
+
+    /* Base Button Foundation with Perfect Alignment */
+    .cta-button {
+      /* Perfect vertical and horizontal centering */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      /* Core styling */
+      background: var(--accent-lime);
+      color: var(--primary-dark);
+      border: none;
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: 33px;
+      font-weight: 600;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      margin: 0 var(--space-xs);
+      font-family: 'Space Mono', monospace;
+      
+      /* Touch targets without affecting text alignment */
+      min-height: var(--touch-target);
+      min-width: 120px;
+      
+      /* Prevent text selection */
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .cta-button:hover {
+      background: var(--accent-lime-dim);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(211, 255, 0, 0.3);
+    }
+
+    .cta-button:focus {
+      outline: 2px solid var(--accent-lime);
+      outline-offset: 2px;
+    }
+
+    /* Glass Primary Button - Translucent with Gradient Support */
+    .cta-button.glass-primary {
+      background: rgba(211, 255, 0, 0.15);
+      color: var(--text-primary);
+      border: 1px solid rgba(211, 255, 0, 0.4);
+      backdrop-filter: blur(16px) saturate(1.2);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .cta-button.glass-primary:hover {
+      background: rgba(211, 255, 0, 0.25);
+      border-color: rgba(211, 255, 0, 0.7);
+      transform: translateY(-1px);
+      box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(211, 255, 0, 0.3),
+        0 0 40px var(--terracotta-alpha), /* Subtle terracotta glow */
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    /* Glass Secondary Button - Enhanced Outline with Glass Backing */
+    .cta-button.secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent-lime);
+      border: 1px solid rgba(211, 255, 0, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .cta-button.secondary:hover {
+      background: rgba(211, 255, 0, 0.1);
+      border-color: rgba(211, 255, 0, 0.8);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+      box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.2),
+        0 0 15px rgba(211, 255, 0, 0.2),
+        0 0 30px var(--terracotta-alpha), /* Terracotta accent glow */
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .cta-button.secondary:focus {
+      outline: 2px solid var(--accent-lime);
+      outline-offset: 2px;
+    }
+
+    /* Elite Glassmorphism Button Variants */
+    
+    /* Glass Terracotta - Dark Glass with Terracotta Backing */
+    .cta-button.glass-terracotta {
+      background: var(--terracotta-alpha);
+      color: var(--text-primary);
+      border: 1px solid var(--terracotta-border);
+      backdrop-filter: blur(16px) saturate(1.2);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .cta-button.glass-terracotta:hover {
+      background: var(--terracotta-alpha-hover);
+      border-color: var(--terracotta-border-hover);
+      transform: translateY(-1px);
+      box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.3),
+        0 0 20px var(--terracotta-border),
+        0 0 40px rgba(211, 255, 0, 0.2), /* Lime accent glow */
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Glass Hero - Enhanced for Hero Sections (2px for emphasis) */
+    .cta-button.glass-hero {
+      background: rgba(211, 255, 0, 0.12);
+      color: var(--text-primary);
+      border: 1px solid rgba(211, 255, 0, 0.5);
+      backdrop-filter: blur(20px) saturate(1.3);
+      -webkit-backdrop-filter: blur(20px) saturate(1.3);
+      padding: calc(var(--space-sm) + 0.25rem) calc(var(--space-lg) + 0.5rem);
+      font-size: 1.1rem;
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 2px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .cta-button.glass-hero:hover {
+      background: rgba(211, 255, 0, 0.2);
+      border-color: rgba(211, 255, 0, 0.8);
+      transform: translateY(-2px);
+      box-shadow: 
+        0 25px 80px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(211, 255, 0, 0.4),
+        0 0 60px var(--terracotta-alpha), /* Terracotta depth glow */
+        0 0 0 2px rgba(211, 255, 0, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    /* Glass Subtle - Minimal for Navigation */
+    .cta-button.glass-subtle {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-secondary);
+      border: 1px solid rgba(211, 255, 0, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: calc(var(--space-sm) - 0.25rem) var(--space-sm);
+      font-size: 0.9rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .cta-button.glass-subtle:hover {
+      background: rgba(211, 255, 0, 0.08);
+      border-color: rgba(211, 255, 0, 0.4);
+      color: var(--text-primary);
+      box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.15),
+        0 0 10px rgba(211, 255, 0, 0.15);
+    }
+
+    /* Glass Floating - Elevated with Strong Shadows (3px for maximum emphasis) */
+    .cta-button.glass-floating {
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--text-primary);
+      border: 1px solid rgba(211, 255, 0, 0.6);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .cta-button.glass-floating:hover {
+      background: linear-gradient(135deg, 
+        rgba(211, 255, 0, 0.15), 
+        var(--terracotta-alpha)); /* Terracotta + lime gradient */
+      border-color: rgba(211, 255, 0, 0.9);
+      transform: translateY(-3px);
+      box-shadow: 
+        0 40px 80px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(211, 255, 0, 0.5),
+        0 0 80px var(--terracotta-border), /* Terracotta outer glow */
+        0 0 0 2px rgba(211, 255, 0, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    /* Apple-Style Ultra Refined Glass */
+    .cta-button.glass-apple {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(20px) saturate(1.2);
+      -webkit-backdrop-filter: blur(20px) saturate(1.2);
+      box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.12),
+        0 1px 2px rgba(0, 0, 0, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .cta-button.glass-apple:hover {
+      background: rgba(211, 255, 0, 0.12);
+      border-color: rgba(211, 255, 0, 0.4);
+      box-shadow: 
+        0 3px 6px rgba(0, 0, 0, 0.16),
+        0 3px 6px rgba(0, 0, 0, 0.23),
+        0 0 15px rgba(211, 255, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .hero-buttons {
+      margin-top: var(--space-lg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .footer {
+      text-align: center;
+      padding: var(--space-2xl) var(--space-lg) var(--space-lg);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .cta-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2rem;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .text-link {
+      color: var(--accent-lime); 
+      text-decoration: underline;
+    }
+
+    /* Responsive Design with Container Queries Support */
+    @container (max-width: 768px) {
+      .hover-gradient.glass {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+    }
+
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      .hero-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-sm);
+      }
+
+      .cta-button {
+        margin: 0;
+        width: 80%;
+        max-width: 320px;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      /* Reduce backdrop blur on mobile for better performance */
+      .hover-gradient.glass,
+      .hover-gradient.glass-enhanced {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
+      /* Simplify gradients on mobile */
+      .hover-gradient {
+        --hover-gradient-transition: var(--animation-duration-fast) ease;
+      }
+    }
+
+    /* Touch Device Optimizations */
+    @media (hover: none) and (pointer: coarse) {
+      .hover-gradient:active {
+        transform: scale(0.98);
+      }
+      
+      /* Use tap instead of hover for touch devices */
+      .hover-gradient:active.glass {
+        border-color: var(--glass-border-hover);
+        box-shadow: 
+          0 16px 48px var(--shadow-medium),
+          0 0 20px rgba(211, 255, 0, 0.2);
+      }
+
+      /* Disable complex effects on touch for performance */
+      .hover-gradient {
+        --hover-gradient-transition: none;
+      }
+    }
+
+    /* Accessibility - Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+      .hover-gradient,
+      .glass,
+      .cta-button {
+        --hover-gradient-transition: none;
+        --animation-duration-fast: 0s;
+        --animation-duration-normal: 0s;
+        --animation-duration-slow: 0s;
+        transition: none !important;
+      }
+    }
+
+    /* High Contrast Mode Support */
+    @media (prefers-contrast: high) {
+      .hover-gradient {
+        --hover-gradient-primary: #ffff00;
+        --glass-border: rgba(255, 255, 255, 0.5);
+        border-width: 2px;
+      }
+
+      .glass {
+        border: 2px solid var(--glass-border);
+      }
+    }
+
+    /* Dark Mode Detection (Future-Proofing) */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --glass-bg: rgba(0, 0, 0, 0.2);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --shadow-dark: rgba(0, 0, 0, 0.4);
+      }
+      
+      .hover-gradient.glass-enhanced {
+        background: rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    /* Border Refraction Utility Classes */
+    .hover-gradient.border-refraction {
+      border: 2px solid rgba(211, 255, 0, 0.2);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    .hover-gradient.border-refraction:hover {
+      border-color: rgba(211, 255, 0, 0.8);
+      box-shadow: 
+        inset 0 0 0 1px rgba(211, 255, 0, 0.3),
+        0 0 30px rgba(211, 255, 0, 0.4),
+        0 16px 48px var(--shadow-medium);
+    }
+
+    /* Strong refraction for hero elements */
+    .hover-gradient.strong-refraction {
+      border: 2px solid rgba(211, 255, 0, 0.3);
+      box-shadow: 
+        inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+        0 0 0 2px rgba(211, 255, 0, 0.1);
+    }
+
+    .hover-gradient.strong-refraction:hover {
+      border-color: rgba(211, 255, 0, 0.9);
+      box-shadow: 
+        inset 0 0 0 1px rgba(211, 255, 0, 0.4),
+        0 0 40px rgba(211, 255, 0, 0.5),
+        0 0 0 3px rgba(211, 255, 0, 0.2),
+        0 20px 60px var(--shadow-medium);
+    }
+
+    /* Subtle refraction for text elements */
+    .hover-gradient.subtle-refraction {
+      border: 1px solid rgba(211, 255, 0, 0.1);
+    }
+
+    .hover-gradient.subtle-refraction:hover {
+      border-color: rgba(211, 255, 0, 0.4);
+      box-shadow: 
+        0 0 15px rgba(211, 255, 0, 0.2),
+        inset 0 1px 0 rgba(211, 255, 0, 0.1);
+    }
+
+    /* Text readability overlay variants */
+    .hover-gradient.dark-overlay::before {
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .hover-gradient.subtle-overlay::before {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .hover-gradient.extra-dark-overlay::before {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* Print Styles */
+    @media print {
+      .hover-gradient {
+        background: none !important;
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+      }
+    }
