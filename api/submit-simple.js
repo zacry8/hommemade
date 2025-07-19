@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     const submissionJson = JSON.stringify(submissionData, null, 2);
     
     const blob = await put(filename, submissionJson, {
-      access: 'private',
+      access: 'public',
       addRandomSuffix: false,
       token: process.env.BLOB_READ_WRITE_TOKEN
     });

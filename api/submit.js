@@ -159,15 +159,26 @@ function buildSimpleEmail(formData, leadId) {
 }
 
 async function sendSimpleEmail(emailContent) {
+  // Validate email configuration before sending
+  const fromEmail = process.env.EMAIL_FROM || 'noreply@hommemade.xyz';
+  const toEmail = process.env.EMAIL_TO || 'zacry8r@gmail.com';
+  const apiKey = process.env.RESEND_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY environment variable is required');
+  }
+  
+  console.log('📧 Sending email from:', fromEmail, 'to:', toEmail);
+  
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+      'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: process.env.EMAIL_FROM || 'noreply@hommemade.xyz',
-      to: process.env.EMAIL_TO || 'hello@hommemade.xyz',
+      from: fromEmail,
+      to: toEmail,
       subject: emailContent.subject,
       html: emailContent.html,
     }),
@@ -175,10 +186,26 @@ async function sendSimpleEmail(emailContent) {
   
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Email API error: ${response.status} - ${errorText}`);
+    let errorDetails;
+    try {
+      errorDetails = JSON.parse(errorText);
+    } catch {
+      errorDetails = { message: errorText };
+    }
+    
+    // Provide specific error messages for common issues
+    if (response.status === 401) {
+      throw new Error(`Email authentication failed: API key may be invalid or expired. Details: ${errorDetails.message}`);
+    } else if (response.status === 422) {
+      throw new Error(`Email validation failed: Check from/to addresses and domain verification. Details: ${errorDetails.message}`);
+    } else {
+      throw new Error(`Email API error: ${response.status} - ${errorDetails.message || errorText}`);
+    }
   }
   
-  return await response.json();
+  const result = await response.json();
+  console.log('📧 Email sent successfully, ID:', result.id);
+  return result;
 }
 
 // Configure API route
