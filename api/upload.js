@@ -67,7 +67,7 @@ export default async function handler(req, res) {
 
     // Upload to Vercel Blob using official pattern (Pages API version)
     const blob = await put(uniqueFileName, req, {
-      access: 'private',
+      access: 'public',
       addRandomSuffix: false,
       token: config.BLOB_READ_WRITE_TOKEN
     });
@@ -102,7 +102,7 @@ export default async function handler(req, res) {
 }
 
 // Configure API route for file uploads (disable bodyParser for raw file handling)
-export const config = {
+export const apiRouteConfig = {
   api: {
     bodyParser: false,
   },

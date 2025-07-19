@@ -82,7 +82,7 @@ export default async function handler(req, res) {
     console.log('🔍 Submit API - Calling put() with filename:', filename);
     
     const blob = await put(filename, submissionJson, {
-      access: 'private',
+      access: 'public',
       addRandomSuffix: false,
       token: process.env.BLOB_READ_WRITE_TOKEN
     });
@@ -182,7 +182,7 @@ async function sendSimpleEmail(emailContent) {
 }
 
 // Configure API route
-export const config = {
+export const apiRouteConfig = {
   api: {
     bodyParser: {
       sizeLimit: '1mb',
