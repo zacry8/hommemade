@@ -54,6 +54,17 @@
       --animation-easing-bouncy: cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Respect reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
     body {
       margin: 0;
       font-family: 'Space Mono', monospace;
@@ -91,6 +102,7 @@
       padding: var(--space-xl) var(--space-lg);
       max-width: 1200px;
       margin: 0 auto;
+      scroll-margin-top: 100px; /* Account for floating navigation */
     }
 
     /* Enhanced Glass Morphism Base */
