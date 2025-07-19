@@ -1303,8 +1303,16 @@
       
       // Save form data periodically
       setInterval(() => {
-        const formData = new FormData(document.getElementById('onboardingForm'));
-        localStorage.setItem('onboarding_form_data', JSON.stringify(Object.fromEntries(formData)));
+        const form = document.getElementById('onboardingForm');
+        if (form) {
+          try {
+            const formData = new FormData(form);
+            const formObject = Object.fromEntries(formData);
+            localStorage.setItem('onboarding_form_data', JSON.stringify(formObject));
+          } catch (error) {
+            console.warn('Could not save form data:', error);
+          }
+        }
       }, 30000); // Save every 30 seconds
       
       // Load saved form data
