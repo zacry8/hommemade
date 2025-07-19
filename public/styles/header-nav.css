@@ -13,7 +13,7 @@
   background: rgba(10, 10, 10, 0.7);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(211, 255, 0, 0.3);
-  border-radius: 20px;
+  border-radius: 33px;
   padding: var(--space-sm) var(--space-lg);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
@@ -69,10 +69,14 @@
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  padding: var(--space-xs) var(--space-md);
   transition: color 0.3s ease;
   position: relative;
   overflow: hidden;
+  background: transparent !important;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Animated terracotta gradient underline */
@@ -153,6 +157,7 @@
 .floating-nav .nav-links a:focus {
   outline: 2px solid var(--accent-lime);
   outline-offset: 2px;
+  background: transparent !important;
 }
 
 /* Mobile Hamburger Menu */

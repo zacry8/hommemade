@@ -68,9 +68,16 @@
     body {
       margin: 0;
       font-family: 'Space Mono', monospace;
-      background: var(--primary-dark);
+      background: var(--primary-dark) !important;
       color: var(--text-primary);
       overflow-x: hidden;
+    }
+
+    /* Hide any rogue canvas elements that might be causing background issues */
+    #c, canvas#c {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
     }
 
     .hero {
@@ -417,8 +424,8 @@
     }
 
     .theme-terracotta {
-      --hover-gradient-primary: var(--terracotta);
-      --hover-gradient-secondary: var(--terracotta-alpha);
+      --hover-gradient-primary: var(--terracotta) !important;
+      --hover-gradient-secondary: var(--terracotta-alpha) !important;
     }
 
     .theme-lime-terracotta {

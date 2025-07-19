@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery — Homme Made</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R7M4D7CC93"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-R7M4D7CC93');
+    </script>
+    
+    <!-- External Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.29/dist/lenis.min.js"></script>
+    <script>
+      if (typeof Lenis === 'undefined') {
+        document.write('<script src="https://unpkg.com/lenis@1.0.29/dist/lenis.min.js"><\/script>');
+      }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="styles/header-nav.css">
+    <link rel="stylesheet" href="styles/gallery.css">
+</head>
+<body>
+    <!-- Floating Navigation Pill -->
+    <nav class="floating-nav">
+        <a href="index.html" class="logo">Homme Made</a>
+        <div class="nav-links">
+            <a href="index.html#services">Services</a>
+            <a href="index.html#philosophy">Philosophy</a>
+            <a href="gallery.html" class="active">Gallery</a>
+            <a href="pricing-menu.html">Pricing</a>
+            <a href="index.html#contact">Contact</a>
+        </div>
+        <div class="hamburger" id="hamburgerBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html#services">Services</a>
+        <a href="index.html#philosophy">Philosophy</a>
+        <a href="gallery.html" class="active">Gallery</a>
+        <a href="pricing-menu.html">Pricing</a>
+        <a href="index.html#contact">Contact</a>
+    </div>
+
+    <!-- Fade overlays for smooth scrolling effect -->
+    <div class="fade-top"></div>
+    <div class="fade-bottom"></div>
+
+    <!-- Main Gallery -->
+    <div id="gallery">
+      <!-- Left Column -->
+      <div class="col-left">
+        <div class="img-col" id="col1">
+          <!-- Content will be generated dynamically from portfolio.json -->
+        </div>
+      </div>
+
+      <!-- Navigation Column -->
+      <div class="col-nav">
+        <div class="nav-container">
+          <!-- Navigation will be generated dynamically from portfolio.json -->
+        </div>
+      </div>
+
+      <!-- Right Columns (2 columns) -->
+      <div class="col-right">
+        <!-- Column 2 (Reversed Direction) -->
+        <div class="img-col" id="col2">
+          <!-- Content will be generated dynamically from portfolio.json -->
+        </div>
+
+        <!-- Column 3 -->
+        <div class="img-col" id="col3">
+          <!-- Content will be generated dynamically from portfolio.json -->
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/header-nav.js"></script>
+    <script src="js/gallery.js"></script>
+</body>
+</html>

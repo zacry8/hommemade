@@ -29,3 +29,6 @@ yarn-error.log*
 # Build outputs
 dist/
 build/
+
+# Inspiration and private content
+Inspo/
