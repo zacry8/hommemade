@@ -1170,30 +1170,28 @@
       }
     }
     
-    // Upload files to Vercel Blob
+    // Upload files to Vercel Blob using official pattern
     async function uploadFiles(files) {
       const uploadedFiles = [];
       
       for (const file of files) {
         try {
-          // Convert file to base64 for upload
-          const fileData = await fileToBase64(file);
-          
-          const response = await fetch('/api/upload', {
+          // Use Vercel's recommended pattern with query parameters
+          const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              file: fileData,
-              fileName: file.name
-            })
+            body: file, // Send file directly, no JSON wrapper
           });
           
           const result = await response.json();
           
-          if (response.ok && result.success) {
-            uploadedFiles.push(result.file);
+          if (response.ok && result.url) {
+            // Convert Vercel blob response to our expected format
+            uploadedFiles.push({
+              url: result.url,
+              fileName: file.name,
+              pathname: result.pathname,
+              size: file.size
+            });
           } else {
             throw new Error(result.message || 'File upload failed');
           }
@@ -1205,16 +1203,6 @@
       }
       
       return uploadedFiles;
-    }
-    
-    // Convert file to base64
-    function fileToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-      });
     }
     
     // Show success message

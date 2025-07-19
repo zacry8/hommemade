@@ -1,11 +1,11 @@
 /**
- * File Upload API Route - Simple & Working
+ * File Upload API Route - Vercel Official Pattern
  * 
- * Basic file upload functionality:
- * - Store files in Vercel Blob
+ * Simple file upload using Vercel's recommended approach:
+ * - Direct file-to-blob upload
+ * - Query parameter for filename
  * - Private access for security
- * - File type and size validation
- * - Return file URL for form submission
+ * - Minimal validation
  */
 
 import { put } from '@vercel/blob';
@@ -31,6 +31,17 @@ export default async function handler(req, res) {
       });
     }
 
+    // Get filename from query parameters (Vercel pattern)
+    const { searchParams } = new URL(req.url, `http://${req.headers.host}`);
+    const filename = searchParams.get('filename');
+    
+    if (!filename) {
+      return res.status(400).json({ 
+        error: 'Missing filename',
+        message: 'Filename must be provided as query parameter'
+      });
+    }
+
     // Check if file upload is enabled
     const fileConfig = getFileUploadConfig();
     if (!fileConfig.enabled) {
@@ -40,18 +51,8 @@ export default async function handler(req, res) {
       });
     }
 
-    // Get the file from the request
-    const { file, fileName } = req.body;
-    
-    if (!file || !fileName) {
-      return res.status(400).json({ 
-        error: 'Missing file data',
-        message: 'Both file and fileName are required'
-      });
-    }
-
     // Validate file type
-    const fileExtension = fileName.split('.').pop()?.toLowerCase();
+    const fileExtension = filename.split('.').pop()?.toLowerCase();
     if (!fileExtension || !fileConfig.allowedTypes.includes(fileExtension)) {
       return res.status(400).json({ 
         error: 'File type not allowed',
@@ -60,46 +61,33 @@ export default async function handler(req, res) {
       });
     }
 
-    // Validate file size (if we can determine it)
-    if (file.length && file.length > fileConfig.maxSize) {
-      return res.status(400).json({ 
-        error: 'File too large',
-        message: `Maximum file size: ${Math.round(fileConfig.maxSize / 1024 / 1024)}MB`,
-        maxSize: fileConfig.maxSize
-      });
-    }
-
-    // Generate unique filename linked to submission
+    // Generate unique filename
     const timestamp = Date.now();
-    const submissionId = req.body.submissionId || timestamp.toString();
-    const uniqueFileName = `uploads/${submissionId}-${fileName}`;
+    const uniqueFileName = `uploads/${timestamp}-${filename}`;
 
-    // Upload to Vercel Blob (simple)
-    const blob = await put(uniqueFileName, file, {
+    // Upload to Vercel Blob using official pattern (Pages API version)
+    const blob = await put(uniqueFileName, req, {
       access: 'private',
       addRandomSuffix: false,
       token: config.BLOB_READ_WRITE_TOKEN
     });
 
-    // Log successful upload (without sensitive data)
+    // Log successful upload
     console.log('📁 File uploaded successfully:', {
-      submissionId,
-      originalName: fileName,
+      originalName: filename,
+      uniqueName: uniqueFileName,
       blobUrl: blob.url,
       pathname: blob.pathname,
       timestamp: new Date().toISOString()
     });
 
-    // Return success response
+    // Return success response (Vercel blob format)
     res.status(200).json({
-      success: true,
-      file: {
-        url: blob.url,
-        fileName: fileName,
-        uniqueFileName: uniqueFileName,
-        pathname: blob.pathname,
-        uploadedAt: new Date().toISOString()
-      }
+      url: blob.url,
+      pathname: blob.pathname,
+      contentType: blob.contentType,
+      contentDisposition: blob.contentDisposition,
+      downloadUrl: blob.downloadUrl
     });
 
   } catch (error) {
@@ -113,11 +101,9 @@ export default async function handler(req, res) {
   }
 }
 
-// Configure API route for file uploads
+// Configure API route for file uploads (disable bodyParser for raw file handling)
 export const config = {
   api: {
-    bodyParser: {
-      sizeLimit: '50mb',
-    },
+    bodyParser: false,
   },
 };
