@@ -11,8 +11,11 @@
 import { put } from '@vercel/blob';
 
 export default async function handler(req, res) {
+  console.log('🔍 Submit API - Starting request');
+  
   // Only allow POST requests
   if (req.method !== 'POST') {
+    console.log('🔍 Submit API - Method not POST:', req.method);
     return res.status(405).json({ 
       error: 'Method not allowed',
       message: 'Only POST requests are accepted'
@@ -20,7 +23,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log('🔍 Submit API - In try block');
+    
     // Check environment variables
+    console.log('🔍 Submit API - Checking env vars');
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
       console.error('❌ Missing BLOB_READ_WRITE_TOKEN');
       return res.status(500).json({ 
@@ -28,10 +34,15 @@ export default async function handler(req, res) {
         message: 'Please check server configuration'
       });
     }
+    console.log('🔍 Submit API - Env vars OK');
 
     // Basic form data validation (keep your form working)
+    console.log('🔍 Submit API - Validating form data');
     const formData = req.body;
+    console.log('🔍 Submit API - Form data keys:', Object.keys(formData || {}));
+    
     if (!formData || !formData.name || !formData.email) {
+      console.log('🔍 Submit API - Validation failed');
       return res.status(400).json({ 
         error: 'Validation failed',
         message: 'Name and email are required'
@@ -41,9 +52,11 @@ export default async function handler(req, res) {
     // Use the original form data directly (no sanitization to keep compatibility)
     const sanitizedData = formData;
     
+    console.log('🔍 Submit API - Generating submission ID');
     // Generate unique submission ID
     const timestamp = new Date().toISOString();
     const submissionId = timestamp.replace(/[:.]/g, '-');
+    console.log('🔍 Submit API - Generated ID:', submissionId);
     
     // Log form submission (without sensitive data)
     console.log('📋 Form submission received:', {
@@ -63,15 +76,18 @@ export default async function handler(req, res) {
     };
 
     // Store submission in Vercel Blob (simple)
+    console.log('🔍 Submit API - Starting blob storage');
     const filename = `submissions/${submissionId}.json`;
     const submissionJson = JSON.stringify(submissionData, null, 2);
+    console.log('🔍 Submit API - Calling put() with filename:', filename);
     
     const blob = await put(filename, submissionJson, {
       access: 'private',
       addRandomSuffix: false,
       token: process.env.BLOB_READ_WRITE_TOKEN
     });
-
+    
+    console.log('🔍 Submit API - Blob storage successful');
     console.log('💾 Submission stored in blob:', {
       submissionId,
       blobUrl: blob.url,
@@ -79,7 +95,9 @@ export default async function handler(req, res) {
     });
 
     // Send email notification (simple - inline to avoid import issues)
+    console.log('🔍 Submit API - Checking email settings');
     if (process.env.ENABLE_EMAIL_NOTIFICATIONS !== 'false' && process.env.RESEND_API_KEY) {
+      console.log('🔍 Submit API - Sending email notification');
       try {
         const emailContent = buildSimpleEmail(sanitizedData, submissionId);
         await sendSimpleEmail(emailContent);
@@ -88,9 +106,12 @@ export default async function handler(req, res) {
         console.error('❌ Email notification error:', error);
         // Don't fail the submission if email fails
       }
+    } else {
+      console.log('🔍 Submit API - Email notifications disabled or no API key');
     }
 
     // Return success response
+    console.log('🔍 Submit API - Returning success response');
     res.status(200).json({
       success: true,
       message: 'Form submitted successfully',
