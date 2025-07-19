@@ -171,7 +171,8 @@
 
     /* Gradient background layer behind glass */
     .hover-gradient.glass::after,
-    .hover-gradient.glass-terracotta::after {
+    .hover-gradient.glass-terracotta::after,
+    .hover-gradient.cta-button.glass-primary::after {
       content: '';
       position: absolute;
       top: 0;
@@ -188,7 +189,8 @@
 
     /* Show gradient background on hover */
     .hover-gradient.glass:hover::after,
-    .hover-gradient.glass-terracotta:hover::after {
+    .hover-gradient.glass-terracotta:hover::after,
+    .hover-gradient.cta-button.glass-primary:hover::after {
       opacity: 1;
     }
 

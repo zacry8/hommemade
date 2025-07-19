@@ -289,7 +289,7 @@ class HoverGradient {
       ${config.secondaryColor})`;
 
     // For glass elements, use CSS variable to apply gradient to ::after pseudo-element
-    if (element.classList.contains('glass') || element.classList.contains('glass-terracotta')) {
+    if (element.classList.contains('glass') || element.classList.contains('glass-terracotta') || element.classList.contains('glass-primary')) {
       element.style.setProperty('--dynamic-gradient', gradient);
     } else {
       // For non-glass elements, apply gradient directly (preserves existing behavior)
@@ -301,7 +301,7 @@ class HoverGradient {
     }
 
     // Dynamic border color refraction based on mouse position
-    if (element.classList.contains('glass') || element.classList.contains('glass-terracotta')) {
+    if (element.classList.contains('glass') || element.classList.contains('glass-terracotta') || element.classList.contains('glass-primary')) {
       const borderIntensity = Math.min(1, Math.sqrt((x-50)*(x-50) + (y-50)*(y-50)) / 50);
       const borderOpacity = 0.3 + (borderIntensity * 0.4);
       
@@ -345,7 +345,7 @@ class HoverGradient {
       elementData.isActive = false;
       
       // For glass elements, clear the dynamic gradient variable
-      if (element.classList.contains('glass') || element.classList.contains('glass-terracotta')) {
+      if (element.classList.contains('glass') || element.classList.contains('glass-terracotta') || element.classList.contains('glass-primary')) {
         element.style.removeProperty('--dynamic-gradient');
       } else {
         // For non-glass elements, restore original background
