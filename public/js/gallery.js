@@ -613,13 +613,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     } else {
-      // Mouse wheel zoom
+      // Mouse wheel zoom with responsive baseline
       modalImage.addEventListener('wheel', (e) => {
         e.preventDefault();
         const scale = e.deltaY > 0 ? 0.9 : 1.1;
         const currentTransform = modalImage.style.transform || 'scale(1)';
         const currentScale = parseFloat(currentTransform.match(/scale\(([^)]+)\)/)?.[1] || '1');
-        const newScale = Math.min(Math.max(currentScale * scale, 0.5), 3);
+        
+        // Use responsive zoom as reference point instead of fixed values
+        const optimalZoom = calculateOptimalZoom(modalImage);
+        const minZoom = 1.0;
+        const maxZoom = optimalZoom * 1.5; // Allow zooming beyond optimal by 50%
+        
+        const newScale = Math.min(Math.max(currentScale * scale, minZoom), maxZoom);
         modalImage.style.transform = `scale(${newScale})`;
       });
     }
