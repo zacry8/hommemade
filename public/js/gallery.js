@@ -4,6 +4,47 @@ document.addEventListener("DOMContentLoaded", () => {
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   
+  // Smart Image Optimization System - Future-proof with fallback
+  class SmartImage {
+    static getOptimizedUrl(originalSrc, options = {}) {
+      const { width = 800, quality = 75, format = 'auto' } = options;
+      
+      // Check if we're on Vercel or production domain
+      if (this.hasVercelOptimization()) {
+        return `/_vercel/image?url=${encodeURIComponent(originalSrc)}&w=${width}&q=${quality}`;
+      }
+      
+      // Future: Add other CDN optimizations here
+      // if (this.hasCloudinary()) return this.getCloudinaryUrl(originalSrc, options);
+      // if (this.hasNetlify()) return this.getNetlifyUrl(originalSrc, options);
+      
+      // Fallback to original - always works
+      return originalSrc;
+    }
+    
+    static hasVercelOptimization() {
+      const hostname = window.location.hostname;
+      // Check for Vercel domains or your production domain
+      return hostname.includes('vercel.app') || 
+             hostname.includes('hommemade') || // Your domain
+             hostname === 'localhost' || // Local testing
+             process?.env?.VERCEL === '1'; // Vercel environment
+    }
+    
+    static getResponsiveSrcSet(originalSrc, options = {}) {
+      const { quality = 75 } = options;
+      const sizes = [400, 800, 1200, 1600];
+      
+      return sizes.map(size => 
+        `${this.getOptimizedUrl(originalSrc, { width: size, quality })} ${size}w`
+      ).join(', ');
+    }
+    
+    static getResponsiveSizes() {
+      return "(max-width: 480px) 400px, (max-width: 768px) 800px, (max-width: 1200px) 1200px, 1600px";
+    }
+  }
+  
   // Portfolio data - will be loaded from JSON
   let portfolioData = null;
   let currentSectionIndex = 0;
@@ -79,7 +120,10 @@ document.addEventListener("DOMContentLoaded", () => {
         img.style.opacity = '0.7';
         
         setTimeout(() => {
-          img.src = mediaItem.src;
+          // Use smart optimization for dynamic content updates
+          img.srcset = SmartImage.getResponsiveSrcSet(mediaItem.src, { quality: 80 });
+          img.sizes = SmartImage.getResponsiveSizes();
+          img.src = SmartImage.getOptimizedUrl(mediaItem.src, { width: 800, quality: 80 });
           img.alt = mediaItem.title;
           img.dataset.title = mediaItem.title;
           img.dataset.description = mediaItem.description;
@@ -135,7 +179,8 @@ document.addEventListener("DOMContentLoaded", () => {
       navItem.dataset.section = index;
       
       const img = document.createElement('img');
-      img.src = section.thumbnail;
+      // Smaller images for navigation thumbnails
+      img.src = SmartImage.getOptimizedUrl(section.thumbnail, { width: 200, quality: 85 });
       img.alt = section.title;
       img.loading = 'lazy';
       img.decoding = 'async';
@@ -263,9 +308,11 @@ document.addEventListener("DOMContentLoaded", () => {
         
         imgItem.appendChild(pdfContainer);
       } else {
-        // Default to image
+        // Default to image with smart optimization
         const img = document.createElement('img');
-        img.src = mediaItem.src;
+        img.srcset = SmartImage.getResponsiveSrcSet(mediaItem.src, { quality: 80 });
+        img.sizes = SmartImage.getResponsiveSizes();
+        img.src = SmartImage.getOptimizedUrl(mediaItem.src, { width: 800, quality: 80 });
         img.alt = mediaItem.title;
         img.loading = 'lazy';
         img.decoding = 'async';
@@ -456,7 +503,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalTitle = document.getElementById('modalTitle');
     const modalDescription = document.getElementById('modalDescription');
     
-    modalImage.src = src;
+    // Use high-quality optimization for modal images
+    modalImage.srcset = SmartImage.getResponsiveSrcSet(src, { quality: 90 });
+    modalImage.sizes = SmartImage.getResponsiveSizes();
+    modalImage.src = SmartImage.getOptimizedUrl(src, { width: 1200, quality: 90 });
     modalImage.alt = title;
     modalTitle.textContent = title;
     modalDescription.textContent = description;
@@ -466,6 +516,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Reset zoom
     modalImage.classList.remove('zoomed');
+    modalImage.style.transform = '';
   }
   
   function closeImageModal() {
