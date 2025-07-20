@@ -1,4 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "images": {
+    "sizes": [400, 800, 1200, 1600],
+    "formats": ["image/webp"],
+    "minimumCacheTTL": 2678400
+  }
 }
