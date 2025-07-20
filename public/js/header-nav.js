@@ -62,7 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const linkHref = link.getAttribute('href');
     if (
       (currentPage === 'index.html' || currentPage === '') && linkHref.startsWith('#') ||
-      (currentPage === 'pricing-menu.html' && linkHref === 'pricing-menu.html')
+      (currentPage === 'pricing-menu.html' && linkHref === 'pricing-menu.html') ||
+      (currentPage === 'gallery.html' && linkHref === 'gallery.html')
     ) {
       link.style.background = 'rgba(211, 255, 0, 0.1)';
       link.style.color = 'var(--accent-lime)';

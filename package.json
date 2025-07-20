@@ -8,12 +8,16 @@
     "dev": "vercel dev",
     "build": "echo 'No build process required for static site'",
     "start": "vercel dev",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "generate-portfolio": "node scripts/generate-portfolio.js",
+    "watch-portfolio": "node scripts/watch-portfolio.js",
+    "update-gallery": "node scripts/generate-portfolio.js"
   },
   "dependencies": {
     "@vercel/blob": "^1.1.1",
     "dotenv": "^17.2.0",
-    "nodemailer": "^6.9.7"
+    "nodemailer": "^6.9.7",
+    "chokidar": "^3.5.3"
   },
   "devDependencies": {
     "vercel": "^32.7.2"

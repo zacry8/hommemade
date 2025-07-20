@@ -25,6 +25,7 @@
     </script>
     
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/header-nav.css">
     <link rel="stylesheet" href="styles/gallery.css">
 </head>
@@ -35,6 +36,7 @@
         <div class="nav-links">
             <a href="index.html#services">Services</a>
             <a href="index.html#philosophy">Philosophy</a>
+            <a href="index.html#work">Work</a>
             <a href="gallery.html" class="active">Gallery</a>
             <a href="pricing-menu.html">Pricing</a>
             <a href="index.html#contact">Contact</a>
@@ -50,6 +52,7 @@
     <div class="mobile-menu" id="mobileMenu">
         <a href="index.html#services">Services</a>
         <a href="index.html#philosophy">Philosophy</a>
+        <a href="index.html#work">Work</a>
         <a href="gallery.html" class="active">Gallery</a>
         <a href="pricing-menu.html">Pricing</a>
         <a href="index.html#contact">Contact</a>
@@ -58,6 +61,25 @@
     <!-- Fade overlays for smooth scrolling effect -->
     <div class="fade-top"></div>
     <div class="fade-bottom"></div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <button class="modal-close" aria-label="Close modal">&times;</button>
+            <div class="modal-nav">
+                <button class="modal-prev" aria-label="Previous image">&#8249;</button>
+                <button class="modal-next" aria-label="Next image">&#8250;</button>
+            </div>
+            <div class="modal-image-container">
+                <img id="modalImage" src="" alt="" />
+            </div>
+            <div class="modal-info">
+                <h3 id="modalTitle"></h3>
+                <p id="modalDescription"></p>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Gallery -->
     <div id="gallery">
@@ -75,14 +97,15 @@
         </div>
       </div>
 
-      <!-- Right Columns (2 columns) -->
-      <div class="col-right">
-        <!-- Column 2 (Reversed Direction) -->
+      <!-- Right Column 1 -->
+      <div class="col-right1">
         <div class="img-col" id="col2">
           <!-- Content will be generated dynamically from portfolio.json -->
         </div>
+      </div>
 
-        <!-- Column 3 -->
+      <!-- Right Column 2 -->
+      <div class="col-right2">
         <div class="img-col" id="col3">
           <!-- Content will be generated dynamically from portfolio.json -->
         </div>
@@ -91,6 +114,7 @@
 
     <!-- JavaScript -->
     <script src="js/header-nav.js"></script>
+    <script src="js/hover-gradient.js"></script>
     <script src="js/gallery.js"></script>
 </body>
 </html>

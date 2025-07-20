@@ -13,8 +13,8 @@
  *   npm install fs path
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 // Configuration
 const PORTFOLIO_DIR = './portfolio';
@@ -201,11 +201,11 @@ function main() {
 }
 
 // Run if called directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
 
-module.exports = {
+export {
   scanPortfolioFolder,
   generatePortfolioConfig,
   getFileType,

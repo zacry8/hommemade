@@ -11,10 +11,10 @@
  *   node scripts/watch-portfolio.js
  */
 
-const chokidar = require('chokidar');
-const { generatePortfolioConfig, scanPortfolioFolder } = require('./generate-portfolio.js');
-const fs = require('fs');
-const path = require('path');
+import chokidar from 'chokidar';
+import { generatePortfolioConfig, scanPortfolioFolder } from './generate-portfolio.js';
+import fs from 'fs';
+import path from 'path';
 
 const PORTFOLIO_DIR = './portfolio';
 const OUTPUT_FILE = './public/data/portfolio.json';
@@ -96,12 +96,5 @@ function startWatcher() {
   });
 }
 
-// Check if chokidar is installed
-try {
-  require('chokidar');
-  startWatcher();
-} catch (error) {
-  console.log('📦 Installing required dependencies...');
-  console.log('Please run: npm install chokidar');
-  console.log('Then try again: node scripts/watch-portfolio.js');
-}
+// Start the watcher
+startWatcher();

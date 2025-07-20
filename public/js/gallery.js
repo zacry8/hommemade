@@ -18,13 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const imageObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        const imgItem = entry.target;
-        const img = imgItem.querySelector('img');
-        if (img && img.dataset.src) {
+        const img = entry.target;
+        if (img.dataset.src) {
           img.src = img.dataset.src;
           img.removeAttribute('data-src');
-          imgItem.classList.remove('loading');
-          imageObserver.unobserve(imgItem);
+          imageObserver.unobserve(img);
         }
       }
     });
@@ -43,79 +41,82 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   
-  // Create image item element
-  function createImageItem(mediaItem, index) {
-    const imgItem = document.createElement('div');
-    imgItem.className = 'img-item loading';
-    imgItem.innerHTML = `
-      <img data-src="${mediaItem.src}" alt="${mediaItem.title}" loading="lazy">
-      <div class="img-overlay">
-        <div class="img-title">${mediaItem.title}</div>
-        <div class="img-description">${mediaItem.description}</div>
-        ${mediaItem.tags && mediaItem.tags.length ? `
-          <div class="img-tags">
-            ${mediaItem.tags.map(tag => `<span class="img-tag">${tag}</span>`).join('')}
-          </div>
-        ` : ''}
-      </div>
-    `;
+  // Get all portfolio items for smooth navigation
+  function getAllPortfolioItems() {
+    if (!portfolioData) return [];
     
-    // Add click handler for fullscreen view (future feature)
-    imgItem.addEventListener('click', () => {
-      // Could implement lightbox/fullscreen view here
-      console.log('Clicked image:', mediaItem.title);
+    const allItems = [];
+    portfolioData.gallery.sections.forEach(section => {
+      section.media.forEach(mediaItem => {
+        allItems.push({
+          ...mediaItem,
+          section: section.title,
+          sectionId: section.id
+        });
+      });
     });
-    
-    return imgItem;
+    return allItems;
   }
   
-  // Distribute media items across columns
-  function distributeMediaAcrossColumns(media) {
-    const col1 = document.getElementById('col1');
-    const col2 = document.getElementById('col2');
-    const col3 = document.getElementById('col3');
+  // Update only Column 1 (left) with portfolio items based on scroll position
+  function updateMainColumns(scrollProgress) {
+    const allItems = getAllPortfolioItems();
+    if (allItems.length === 0) return;
     
-    // Clear existing content
-    [col1, col2, col3].forEach(col => {
-      if (col) col.innerHTML = '';
-    });
+    // Calculate which items to show based on scroll position
+    const itemsPerView = 3; // Only Column 1 items
+    const startIndex = Math.floor(scrollProgress * (allItems.length - itemsPerView + 1));
     
-    if (!media || media.length === 0) return;
+    // Get only Column 1 (left) images
+    const leftColumnImages = document.querySelectorAll('.col-left img');
     
-    // Distribute items across 3 columns in a balanced way
-    media.forEach((mediaItem, index) => {
-      const imgItem = createImageItem(mediaItem, index);
+    leftColumnImages.forEach((img, index) => {
+      const itemIndex = startIndex + index;
+      const mediaItem = allItems[itemIndex % allItems.length];
       
-      // Distribute across columns
-      const columnIndex = index % 3;
-      const targetCol = columnIndex === 0 ? col1 : columnIndex === 1 ? col2 : col3;
-      
-      if (targetCol) {
-        targetCol.appendChild(imgItem);
-        // Start observing for lazy loading
-        imageObserver.observe(imgItem);
+      if (mediaItem) {
+        img.style.transition = 'opacity 0.3s ease';
+        img.style.opacity = '0.7';
+        
+        setTimeout(() => {
+          img.src = mediaItem.src;
+          img.alt = mediaItem.title;
+          img.dataset.title = mediaItem.title;
+          img.dataset.description = mediaItem.description;
+          img.style.opacity = '1';
+        }, 150);
       }
     });
+    
+    // Update navigation active state based on current section
+    if (allItems[startIndex]) {
+      const currentSectionId = allItems[startIndex].sectionId;
+      const navItems = document.querySelectorAll(".nav-item");
+      let activeSectionIndex = 0;
+      
+      navItems.forEach((item, i) => {
+        const section = portfolioData.gallery.sections[i];
+        if (section && section.id === currentSectionId) {
+          item.classList.add("active");
+          activeSectionIndex = i;
+        } else {
+          item.classList.remove("active");
+        }
+      });
+      
+      // Update right columns with current folder content
+      generateFolderRightColumns(activeSectionIndex);
+    }
   }
   
-  // Update main columns with selected section media
-  function updateMainColumns(sectionIndex) {
-    if (!portfolioData || !portfolioData.gallery.sections[sectionIndex]) {
-      console.warn('Portfolio data not loaded or section not found');
-      return;
+  // Initialize lazy loading for images
+  function initLazyLoading() {
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    if ('IntersectionObserver' in window) {
+      images.forEach(img => {
+        imageObserver.observe(img);
+      });
     }
-    
-    currentSectionIndex = sectionIndex;
-    const section = portfolioData.gallery.sections[sectionIndex];
-    const media = section.media || [];
-    
-    // Update navigation active state
-    document.querySelectorAll('.nav-item').forEach((item, index) => {
-      item.classList.toggle('active', index === sectionIndex);
-    });
-    
-    // Distribute media across columns
-    distributeMediaAcrossColumns(media);
   }
   
   // Generate navigation items from portfolio data
@@ -132,167 +133,730 @@ document.addEventListener("DOMContentLoaded", () => {
       const navItem = document.createElement('div');
       navItem.className = 'nav-item';
       navItem.dataset.section = index;
-      navItem.textContent = section.title;
       
-      // Add click handler
-      navItem.addEventListener('click', () => {
-        updateMainColumns(index);
-      });
+      const img = document.createElement('img');
+      img.src = section.thumbnail;
+      img.alt = section.title;
+      img.loading = 'lazy';
+      img.decoding = 'async';
       
+      const label = document.createElement('span');
+      label.className = 'nav-label';
+      label.textContent = section.title;
+      
+      navItem.appendChild(img);
+      navItem.appendChild(label);
       navContainer.appendChild(navItem);
     });
+  }
+  
+  // Generate main gallery content from portfolio data
+  function generateGalleryContent() {
+    if (!portfolioData) return;
     
-    // Set first section as active
-    if (portfolioData.gallery.sections.length > 0) {
-      updateMainColumns(0);
+    // Only populate the left column - right columns get static content
+    const leftColumn = document.querySelector('#col1');
+    
+    // Clear existing content
+    if (leftColumn) {
+      leftColumn.innerHTML = '';
     }
-  }
-  
-  // Initialize smooth scrolling with Lenis (if available)
-  function initSmoothScrolling() {
-    if (typeof Lenis !== 'undefined' && !isMobile && !prefersReducedMotion) {
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        direction: 'vertical',
-        gestureDirection: 'vertical',
-        smooth: true,
-        mouseMultiplier: 1,
-        smoothTouch: false,
-        touchMultiplier: 2,
-        infinite: false,
-      });
-
-      function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
+    
+    // Create placeholder items for left column (will be updated by updateMainColumns)
+    if (leftColumn) {
+      for (let i = 0; i < 3; i++) {
+        const imgItem = document.createElement('div');
+        imgItem.className = 'img-item';
+        
+        const img = document.createElement('img');
+        img.src = '';
+        img.alt = 'Portfolio item';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        
+        // Add hover overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'img-overlay';
+        
+        const overlayTitle = document.createElement('div');
+        overlayTitle.className = 'img-overlay-title';
+        
+        const overlayDescription = document.createElement('div');
+        overlayDescription.className = 'img-overlay-description';
+        
+        overlay.appendChild(overlayTitle);
+        overlay.appendChild(overlayDescription);
+        
+        imgItem.appendChild(img);
+        imgItem.appendChild(overlay);
+        leftColumn.appendChild(imgItem);
+        
+        // Add click handler for modal
+        imgItem.addEventListener('click', () => {
+          if (img.src && img.dataset.title) {
+            openImageModal(img.src, img.dataset.title, img.dataset.description);
+          }
+        });
       }
-      requestAnimationFrame(raf);
     }
   }
   
-  // Initialize GSAP ScrollTrigger animations (if available)
-  function initScrollAnimations() {
-    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-    if (prefersReducedMotion) return;
+  // Generate folder-specific content for right columns (Columns 3 & 4)
+  function generateFolderRightColumns(sectionIndex = 0) {
+    if (!portfolioData || !portfolioData.gallery.sections[sectionIndex]) return;
+    
+    const rightColumn1 = document.querySelector('#col2');
+    const rightColumn2 = document.querySelector('#col3');
+    const section = portfolioData.gallery.sections[sectionIndex];
+    const folderItems = section.media || [];
+    
+    // Clear existing content
+    if (rightColumn1) rightColumn1.innerHTML = '';
+    if (rightColumn2) rightColumn2.innerHTML = '';
+    
+    // Populate right columns with current folder's content
+    folderItems.forEach((mediaItem, index) => {
+      // Alternate between the two right columns
+      const targetColumn = index % 2 === 0 ? rightColumn1 : rightColumn2;
+      if (!targetColumn) return;
+      
+      const imgItem = document.createElement('div');
+      imgItem.className = 'img-item';
+      imgItem.dataset.section = sectionIndex;
+      
+      // Handle different media types
+      if (mediaItem.type === 'video') {
+        const video = document.createElement('video');
+        video.src = mediaItem.src;
+        video.alt = mediaItem.title;
+        video.setAttribute('playsinline', '');
+        video.muted = true;
+        video.loop = true;
+        video.controls = false;
+        video.style.width = '100%';
+        video.style.height = '100%';
+        video.style.objectFit = 'cover';
+        
+        // Auto-play on hover for desktop
+        if (!isMobile) {
+          imgItem.addEventListener('mouseenter', () => video.play());
+          imgItem.addEventListener('mouseleave', () => video.pause());
+        }
+        
+        imgItem.appendChild(video);
+      } else if (mediaItem.type === 'pdf') {
+        // Create PDF preview container
+        const pdfContainer = document.createElement('div');
+        pdfContainer.className = 'pdf-preview';
+        
+        // PDF icon and title
+        pdfContainer.innerHTML = `
+          <div class="pdf-icon">📄</div>
+          <div class="pdf-title">${mediaItem.title}</div>
+          <div class="pdf-subtitle">PDF Document</div>
+        `;
+        
+        // Click to open PDF
+        pdfContainer.addEventListener('click', () => {
+          window.open(mediaItem.src, '_blank');
+        });
+        
+        imgItem.appendChild(pdfContainer);
+      } else {
+        // Default to image
+        const img = document.createElement('img');
+        img.src = mediaItem.src;
+        img.alt = mediaItem.title;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        imgItem.appendChild(img);
+        
+        // Add click handler for modal
+        imgItem.addEventListener('click', () => {
+          openImageModal(mediaItem.src, mediaItem.title, mediaItem.description);
+        });
+      }
+      
+      // Add hover overlay for all types
+      const overlay = document.createElement('div');
+      overlay.className = 'img-overlay';
+      
+      const overlayTitle = document.createElement('div');
+      overlayTitle.className = 'img-overlay-title';
+      overlayTitle.textContent = mediaItem.title;
+      
+      const overlayDescription = document.createElement('div');
+      overlayDescription.className = 'img-overlay-description';
+      overlayDescription.textContent = mediaItem.description;
+      
+      const overlayTags = document.createElement('div');
+      overlayTags.className = 'img-overlay-tags';
+      if (mediaItem.tags && mediaItem.tags.length > 0) {
+        mediaItem.tags.slice(0, 3).forEach(tag => { // Show max 3 tags
+          const tagElement = document.createElement('span');
+          tagElement.className = 'img-overlay-tag';
+          tagElement.textContent = tag;
+          overlayTags.appendChild(tagElement);
+        });
+      }
+      
+      overlay.appendChild(overlayTitle);
+      overlay.appendChild(overlayDescription);
+      if (mediaItem.tags && mediaItem.tags.length > 0) {
+        overlay.appendChild(overlayTags);
+      }
+      
+      imgItem.appendChild(overlay);
+      targetColumn.appendChild(imgItem);
+    });
+  }
+  
+  // Fallback navigation system
+  function initBasicNavigation() {
+    const navItems = document.querySelectorAll(".nav-item");
+    
+    navItems.forEach((item, i) => {
+      item.addEventListener("click", () => {
+        // Update main columns immediately
+        updateMainColumns(i);
+        
+        // Then scroll to section
+        const targetY = i * window.innerHeight;
+        window.scrollTo({
+          top: targetY,
+          behavior: 'smooth'
+        });
+      });
+    });
+    
+    // Basic scroll highlighting
+    function updateNav() {
+      const scrollPos = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const section = Math.min(
+        Math.floor((scrollPos + viewportHeight * 0.4) / viewportHeight),
+        navItems.length - 1
+      );
+      
+      // Update main columns to match scroll position
+      updateMainColumns(section);
+      
+      navItems.forEach((item, i) => {
+        if (i === section) {
+          item.classList.add("active");
+        } else {
+          item.classList.remove("active");
+        }
+      });
+    }
+    
+    window.addEventListener("scroll", updateNav);
+    updateNav();
+  }
+  
+  // Enhanced system with mobile optimizations
+  function initEnhancedSystem() {
+    // Mobile-optimized Lenis configuration
+    const lenisConfig = {
+      duration: isMobile ? 1.0 : 1.8,
+      easing: isMobile ? (t) => t : (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+      direction: "vertical",
+      smooth: !isMobile, // Disable smooth scroll on mobile for better performance
+      mouseMultiplier: isMobile ? 0.8 : 1.2,
+      touchMultiplier: isMobile ? 1.5 : 2,
+      wheelMultiplier: isMobile ? 0.5 : 1
+    };
+    
+    const lenis = new Lenis(lenisConfig);
     
     gsap.registerPlugin(ScrollTrigger);
     
-    // Animate image items as they come into view
-    gsap.utils.toArray('.img-item').forEach((item, index) => {
-      gsap.fromTo(item, 
-        {
-          y: 100,
-          opacity: 0,
-          scale: 0.8
-        },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          delay: index * 0.1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: item,
-            start: "top 90%",
-            end: "bottom 20%",
-            toggleActions: "play none none reverse"
+    // Only setup Lenis integration if not mobile
+    if (!isMobile) {
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add((time) => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+    }
+    
+    const col1 = document.getElementById("col1");
+    const col2 = document.getElementById("col2");
+    const col3 = document.getElementById("col3");
+    const navItems = document.querySelectorAll(".nav-item");
+    const sections = navItems.length;
+    
+    
+    
+    window.addEventListener("scroll", updateNav);
+    updateNav();
+    
+    // Add swipe gesture support for mobile
+    if (isMobile && isTouchDevice) {
+      let startY = 0;
+      let currentSection = 0;
+      
+      document.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+      
+      document.addEventListener('touchend', (e) => {
+        const endY = e.changedTouches[0].clientY;
+        const deltaY = startY - endY;
+        const threshold = 50;
+        
+        if (Math.abs(deltaY) > threshold) {
+          if (deltaY > 0 && currentSection < sections - 1) {
+            // Swipe up - next section
+            currentSection++;
+          } else if (deltaY < 0 && currentSection > 0) {
+            // Swipe down - previous section
+            currentSection--;
           }
+          
+          updateMainColumns(currentSection);
+          window.scrollTo({
+            top: currentSection * window.innerHeight,
+            behavior: 'smooth'
+          });
         }
-      );
+      }, { passive: true });
+    }
+    
+    window.addEventListener("resize", () => {
+      if (!isMobile) {
+        ScrollTrigger.refresh();
+      }
+      updateNav();
+    });
+  }
+  
+  // Image Modal Functionality
+  let currentImageIndex = 0;
+  let currentImages = [];
+  
+  function openImageModal(src, title, description) {
+    // Build array of all images for navigation
+    currentImages = [];
+    portfolioData.gallery.sections.forEach(section => {
+      section.media.forEach(media => {
+        if (media.type !== 'video' && media.type !== 'pdf') {
+          currentImages.push(media);
+        }
+      });
     });
     
-    // Animate navigation items
-    gsap.fromTo('.nav-item', 
-      {
-        x: -50,
-        opacity: 0
-      },
-      {
-        x: 0,
-        opacity: 1,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "power2.out",
-        delay: 0.3
-      }
-    );
+    // Find current image index
+    currentImageIndex = currentImages.findIndex(img => img.src === src);
+    
+    showImageModal(src, title, description);
   }
   
-  // Handle keyboard navigation
-  function initKeyboardNavigation() {
+  function showImageModal(src, title, description) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDescription = document.getElementById('modalDescription');
+    
+    modalImage.src = src;
+    modalImage.alt = title;
+    modalTitle.textContent = title;
+    modalDescription.textContent = description;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Reset zoom
+    modalImage.classList.remove('zoomed');
+  }
+  
+  function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  function navigateModal(direction) {
+    if (currentImages.length === 0) return;
+    
+    currentImageIndex += direction;
+    if (currentImageIndex < 0) currentImageIndex = currentImages.length - 1;
+    if (currentImageIndex >= currentImages.length) currentImageIndex = 0;
+    
+    const currentImage = currentImages[currentImageIndex];
+    showImageModal(currentImage.src, currentImage.title, currentImage.description);
+  }
+  
+  // Calculate optimal zoom based on image dimensions and aspect ratio
+  function calculateOptimalZoom(imageElement) {
+    const imageRect = imageElement.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Calculate aspect ratios
+    const imageAspectRatio = imageRect.width / imageRect.height;
+    const viewportAspectRatio = viewportWidth / viewportHeight;
+    
+    // Calculate how much of the viewport the image currently occupies
+    const widthRatio = imageRect.width / viewportWidth;
+    const heightRatio = imageRect.height / viewportHeight;
+    const currentOccupancy = Math.max(widthRatio, heightRatio);
+    
+    let optimalZoom;
+    
+    // Dynamic zoom based on image characteristics
+    if (imageAspectRatio > 2.0) {
+      // Very wide images (panoramic) - conservative zoom
+      optimalZoom = 1.4;
+    } else if (imageAspectRatio < 0.6) {
+      // Very tall images (portrait) - moderate zoom
+      optimalZoom = 1.7;
+    } else if (imageAspectRatio >= 0.8 && imageAspectRatio <= 1.2) {
+      // Square-ish images - standard zoom
+      optimalZoom = 2.0;
+    } else if (imageAspectRatio > 1.2 && imageAspectRatio <= 2.0) {
+      // Landscape images - balanced zoom
+      optimalZoom = 1.6;
+    } else {
+      // Default case
+      optimalZoom = 1.8;
+    }
+    
+    // Adjust zoom based on current size
+    if (currentOccupancy < 0.3) {
+      // Small images can zoom more
+      optimalZoom = Math.min(optimalZoom * 1.4, 3.0);
+    } else if (currentOccupancy > 0.8) {
+      // Large images should zoom less
+      optimalZoom = Math.max(optimalZoom * 0.7, 1.2);
+    }
+    
+    // Ensure zoom stays within reasonable bounds
+    return Math.max(1.2, Math.min(3.0, optimalZoom));
+  }
+
+  // Modal event listeners
+  function initModalListeners() {
+    const modal = document.getElementById('imageModal');
+    const modalBackdrop = modal.querySelector('.modal-backdrop');
+    const modalClose = modal.querySelector('.modal-close');
+    const modalPrev = modal.querySelector('.modal-prev');
+    const modalNext = modal.querySelector('.modal-next');
+    const modalImage = document.getElementById('modalImage');
+    
+    // Close modal
+    modalBackdrop.addEventListener('click', closeImageModal);
+    modalClose.addEventListener('click', closeImageModal);
+    
+    // Navigation
+    modalPrev.addEventListener('click', () => navigateModal(-1));
+    modalNext.addEventListener('click', () => navigateModal(1));
+    
+    // Image zoom with responsive scaling
+    modalImage.addEventListener('click', () => {
+      if (modalImage.classList.contains('zoomed')) {
+        // Reset zoom
+        modalImage.classList.remove('zoomed');
+        modalImage.style.transform = '';
+      } else {
+        // Apply responsive zoom
+        const optimalZoom = calculateOptimalZoom(modalImage);
+        modalImage.style.transform = `scale(${optimalZoom})`;
+        modalImage.classList.add('zoomed');
+      }
+    });
+    
+    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
-      if (!portfolioData) return;
-      
-      const totalSections = portfolioData.gallery.sections.length;
+      if (!modal.classList.contains('active')) return;
       
       switch(e.key) {
-        case 'ArrowRight':
-        case 'ArrowDown':
-          e.preventDefault();
-          currentSectionIndex = (currentSectionIndex + 1) % totalSections;
-          updateMainColumns(currentSectionIndex);
+        case 'Escape':
+          closeImageModal();
           break;
         case 'ArrowLeft':
-        case 'ArrowUp':
-          e.preventDefault();
-          currentSectionIndex = currentSectionIndex === 0 ? totalSections - 1 : currentSectionIndex - 1;
-          updateMainColumns(currentSectionIndex);
+          navigateModal(-1);
           break;
-        case 'Home':
-          e.preventDefault();
-          updateMainColumns(0);
-          break;
-        case 'End':
-          e.preventDefault();
-          updateMainColumns(totalSections - 1);
+        case 'ArrowRight':
+          navigateModal(1);
           break;
       }
     });
-  }
-  
-  // Handle window resize
-  function handleResize() {
-    // Reinitialize ScrollTrigger on resize
-    if (typeof ScrollTrigger !== 'undefined') {
-      ScrollTrigger.refresh();
+    
+    // Touch/wheel zoom support
+    if (isTouchDevice) {
+      let initialDistance = 0;
+      let currentScale = 1;
+      
+      modalImage.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          const touch1 = e.touches[0];
+          const touch2 = e.touches[1];
+          initialDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+          );
+        }
+      });
+      
+      modalImage.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2) {
+          e.preventDefault();
+          const touch1 = e.touches[0];
+          const touch2 = e.touches[1];
+          const currentDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+          );
+          
+          const scale = currentDistance / initialDistance;
+          currentScale = Math.min(Math.max(scale, 0.5), 3);
+          modalImage.style.transform = `scale(${currentScale})`;
+        }
+      });
+    } else {
+      // Mouse wheel zoom
+      modalImage.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const scale = e.deltaY > 0 ? 0.9 : 1.1;
+        const currentTransform = modalImage.style.transform || 'scale(1)';
+        const currentScale = parseFloat(currentTransform.match(/scale\(([^)]+)\)/)?.[1] || '1');
+        const newScale = Math.min(Math.max(currentScale * scale, 0.5), 3);
+        modalImage.style.transform = `scale(${newScale})`;
+      });
     }
   }
-  
-  // Initialize everything
-  async function init() {
-    try {
-      // Load portfolio data
-      await loadPortfolioData();
-      
-      if (!portfolioData) {
-        console.error('Failed to load portfolio data');
-        return;
-      }
-      
-      // Generate navigation and content
+
+  // Initialize the gallery with portfolio data
+  async function initializeGallery() {
+    // Load portfolio data
+    await loadPortfolioData();
+    
+    if (portfolioData) {
+      // Generate dynamic content
       generateNavigation();
+      generateGalleryContent(); // Left column placeholders
+      generateFolderRightColumns(0); // Start with first folder content for right columns
       
-      // Initialize features
-      initSmoothScrolling();
-      initKeyboardNavigation();
+      // Update document title if specified
+      if (portfolioData.gallery.title) {
+        document.title = `${portfolioData.gallery.title} — Homme Made`;
+      }
+    }
+    
+    // Initialize lazy loading
+    initLazyLoading();
+    
+    // Initialize modal listeners
+    initModalListeners();
+    
+    // Initialize scroll isolation for right columns
+    initScrollIsolation();
+  }
+  
+  // Isolate right column scroll events from main navigation
+  function initScrollIsolation() {
+    const rightColumn1 = document.querySelector('.col-right1');
+    const rightColumn2 = document.querySelector('.col-right2');
+    
+    // Prevent right column scroll events from bubbling to main scroll
+    if (rightColumn1) {
+      rightColumn1.addEventListener('scroll', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
       
-      // Add resize handler
-      window.addEventListener('resize', handleResize);
+      rightColumn1.addEventListener('wheel', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
       
-      // Initialize animations after a short delay to ensure DOM is ready
-      setTimeout(() => {
-        initScrollAnimations();
-      }, 100);
+      rightColumn1.addEventListener('touchmove', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
+    }
+    
+    if (rightColumn2) {
+      rightColumn2.addEventListener('scroll', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
       
-      console.log('Gallery initialized successfully');
+      rightColumn2.addEventListener('wheel', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
       
-    } catch (error) {
-      console.error('Failed to initialize gallery:', error);
+      rightColumn2.addEventListener('touchmove', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
     }
   }
   
-  // Start initialization
-  init();
+  // Fallback navigation system
+  function initBasicNavigation() {
+    const navItems = document.querySelectorAll(".nav-item");
+    
+    navItems.forEach((item, i) => {
+      item.addEventListener("click", () => {
+        // Update main columns immediately
+        updateMainColumns(i);
+        
+        // Then scroll to section
+        const targetY = i * window.innerHeight;
+        window.scrollTo({
+          top: targetY,
+          behavior: 'smooth'
+        });
+      });
+    });
+    
+    // Basic scroll highlighting
+    function updateNav() {
+      const scrollPos = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const section = Math.min(
+        Math.floor((scrollPos + viewportHeight * 0.4) / viewportHeight),
+        navItems.length - 1
+      );
+      
+      // Update main columns to match scroll position
+      updateMainColumns(section);
+      
+      navItems.forEach((item, i) => {
+        if (i === section) {
+          item.classList.add("active");
+        } else {
+          item.classList.remove("active");
+        }
+      });
+    }
+    
+    window.addEventListener("scroll", updateNav);
+    updateNav();
+  }
+  
+  // Enhanced system with mobile optimizations
+  function initEnhancedSystem() {
+    // Mobile-optimized Lenis configuration
+    const lenisConfig = {
+      duration: isMobile ? 1.0 : 1.8,
+      easing: isMobile ? (t) => t : (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+      direction: "vertical",
+      smooth: !isMobile, // Disable smooth scroll on mobile for better performance
+      mouseMultiplier: isMobile ? 0.8 : 1.2,
+      touchMultiplier: isMobile ? 1.5 : 2,
+      wheelMultiplier: isMobile ? 0.5 : 1
+    };
+    
+    const lenis = new Lenis(lenisConfig);
+    
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // Only setup Lenis integration if not mobile
+    if (!isMobile) {
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add((time) => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+    }
+    
+    const col1 = document.getElementById("col1");
+    const col2 = document.getElementById("col2");
+    const col3 = document.getElementById("col3");
+    const navItems = document.querySelectorAll(".nav-item");
+    const sections = navItems.length;
+    
+    // GSAP Animations - only for left column (right columns are user-scrollable)
+    if (!isMobile && !prefersReducedMotion) {
+      const allItems = getAllPortfolioItems();
+      const totalItems = allItems.length;
+      // Calculate distance based on total portfolio items to ensure smooth scrolling through all content
+      const distance = totalItems > 0 ? (totalItems * 0.5) * window.innerHeight : (sections - 1) * window.innerHeight;
+      
+      // Only animate Column 1 (Left) - right columns are now independently scrollable
+      gsap.to(col1, {
+        y: -distance,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "body",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: true
+        }
+      });
+      
+      // Note: col2 and col3 (right columns) are no longer animated via GSAP
+      // They are now user-scrollable containers with folder-specific content
+    }
+    
+    // Enhanced navigation with mobile support
+    navItems.forEach((item, i) => {
+      const eventType = isTouchDevice ? 'touchend' : 'click';
+      
+      item.addEventListener(eventType, (e) => {
+        e.preventDefault();
+        
+        // Calculate scroll progress for this section
+        const scrollProgress = i / Math.max(sections - 1, 1);
+        
+        // Update main columns with scroll progress
+        updateMainColumns(scrollProgress);
+        
+        // Mobile uses native scroll, desktop uses Lenis
+        if (isMobile) {
+          const targetY = i * window.innerHeight;
+          window.scrollTo({
+            top: targetY,
+            behavior: 'smooth'
+          });
+        } else {
+          lenis.scrollTo(i * window.innerHeight, {
+            duration: 1.2
+          });
+        }
+      });
+    });
+    
+    function updateNav() {
+      const scrollPos = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const totalScrollHeight = document.body.scrollHeight - viewportHeight;
+      const scrollProgress = totalScrollHeight > 0 ? scrollPos / totalScrollHeight : 0;
+      
+      // Update main columns with continuous scroll progress
+      updateMainColumns(scrollProgress);
+      
+      // Update navigation active state based on current section
+      const section = Math.min(
+        Math.floor((scrollPos + viewportHeight * 0.4) / viewportHeight),
+        sections - 1
+      );
+      
+      navItems.forEach((item, i) => {
+        if (i === section) {
+          item.classList.add("active");
+        } else {
+          item.classList.remove("active");
+        }
+      });
+    }
+    
+    window.addEventListener("scroll", updateNav);
+    updateNav();
+    
+    window.addEventListener("resize", () => {
+      if (!isMobile) {
+        ScrollTrigger.refresh();
+      }
+      updateNav();
+    });
+  }
+
+  // Initialize gallery
+  initializeGallery();
+  
+  // Progressive enhancement logic - delayed for dynamic content
+  setTimeout(() => {
+    if (typeof Lenis !== 'undefined' && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      console.log('Enhanced mode: All libraries loaded');
+      initEnhancedSystem();
+    } else {
+      console.log('Fallback mode: Using basic navigation');
+      initBasicNavigation();
+    }
+  }, 300);
 });
