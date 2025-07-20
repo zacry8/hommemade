@@ -796,9 +796,9 @@
       }
     }
 
-    /* High Contrast Mode Support - Using more supported media query */
-    @media (prefers-color-scheme: dark) and (min-contrast: high), 
-           (-ms-high-contrast: active) {
+    /* High Contrast Mode Support - Updated for modern browsers */
+    @media (prefers-color-scheme: dark) and (prefers-contrast: more),
+           (prefers-contrast: more) {
       .hover-gradient {
         --hover-gradient-primary: #ffff00;
         --glass-border: rgba(255, 255, 255, 0.5);

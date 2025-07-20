@@ -4,14 +4,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   
-  // Simple Vercel Image Optimization
+  // Enhanced Vercel Image Optimization with proper URL handling
   function getOptimizedImageUrl(src, width = 800, quality = 75) {
     // Only optimize on Vercel-hosted sites
     const hostname = window.location.hostname;
     const isVercel = hostname.includes('vercel.app') || hostname.includes('hommemade');
     
     if (isVercel) {
-      return `/_vercel/image?url=${encodeURIComponent(src)}&w=${width}&q=${quality}`;
+      // Convert relative URLs to absolute URLs for Vercel image optimization
+      let imageUrl = src;
+      if (src.startsWith('/') || src.startsWith('./')) {
+        // Convert relative path to absolute URL
+        imageUrl = new URL(src.startsWith('./') ? src.slice(2) : src.slice(1), window.location.origin).href;
+      } else if (!src.startsWith('http')) {
+        // Handle relative paths without leading slash
+        imageUrl = new URL(src, window.location.origin).href;
+      }
+      
+      try {
+        return `/_vercel/image?url=${encodeURIComponent(imageUrl)}&w=${width}&q=${quality}`;
+      } catch (error) {
+        console.warn('Failed to optimize image:', src, error);
+        return src; // Fallback to original
+      }
     }
     
     // Fallback to original for local development
@@ -479,21 +494,83 @@ document.addEventListener("DOMContentLoaded", () => {
   function showImageModal(src, title, description) {
     const modal = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
+    const modalImageContainer = document.querySelector('.modal-image-container');
     const modalTitle = document.getElementById('modalTitle');
     const modalDescription = document.getElementById('modalDescription');
+    const modalTags = document.getElementById('modalTags');
+    const modalInfoOverlay = document.getElementById('modalInfoOverlay');
+    
+    // Reset modal state
+    modalImage.classList.remove('zoomed');
+    modalImage.style.transform = '';
+    modalTags.innerHTML = '';
+    modalInfoOverlay.classList.remove('collapsed');
     
     // High-quality optimized images for modal display
-    modalImage.src = getOptimizedImageUrl(src, 1200, 90);
+    modalImage.src = getOptimizedImageUrl(src, 2000, 92);
     modalImage.alt = title;
     modalTitle.textContent = title;
     modalDescription.textContent = description;
     
+    // Add tags if available from current image data
+    const currentImageData = currentImages[currentImageIndex];
+    if (currentImageData && currentImageData.tags) {
+      currentImageData.tags.forEach(tag => {
+        const tagElement = document.createElement('span');
+        tagElement.className = 'modal-tag';
+        tagElement.textContent = tag;
+        modalTags.appendChild(tagElement);
+      });
+    }
+    
+    // Wait for image to load to calculate optimal dimensions
+    modalImage.onload = () => {
+      calculateAndApplyFullScreenDimensions(modalImage, modalImageContainer);
+    };
+    
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+  }
+  
+  // Calculate optimal dimensions for full screen image display
+  function calculateAndApplyFullScreenDimensions(image, container) {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const imageAspectRatio = image.naturalWidth / image.naturalHeight;
     
-    // Reset zoom
-    modalImage.classList.remove('zoomed');
-    modalImage.style.transform = '';
+    // Use maximum available space with padding for UI elements
+    const availableWidth = viewportWidth * 0.92; // Leave space for navigation
+    const availableHeight = viewportHeight * 0.88; // Leave space for info overlay
+    
+    let containerWidth, containerHeight;
+    
+    // Calculate dimensions that show the complete image at maximum size
+    if (imageAspectRatio > availableWidth / availableHeight) {
+      // Image is wider - fit to available width
+      containerWidth = Math.min(availableWidth, image.naturalWidth);
+      containerHeight = containerWidth / imageAspectRatio;
+    } else {
+      // Image is taller - fit to available height
+      containerHeight = Math.min(availableHeight, image.naturalHeight);
+      containerWidth = containerHeight * imageAspectRatio;
+    }
+    
+    // Ensure minimum reasonable size for very small images
+    const minSize = 400;
+    if (containerWidth < minSize && containerHeight < minSize) {
+      if (imageAspectRatio > 1) {
+        containerWidth = minSize;
+        containerHeight = minSize / imageAspectRatio;
+      } else {
+        containerHeight = minSize;
+        containerWidth = minSize * imageAspectRatio;
+      }
+    }
+    
+    // Apply dimensions to container
+    container.style.width = `${containerWidth}px`;
+    container.style.height = `${containerHeight}px`;
+    container.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
   }
   
   function closeImageModal() {
@@ -513,6 +590,65 @@ document.addEventListener("DOMContentLoaded", () => {
     showImageModal(currentImage.src, currentImage.title, currentImage.description);
   }
   
+  // Enable image panning for zoomed images
+  function enableImagePanning(image, wrapper) {
+    let isDragging = false;
+    let startX, startY, initialX = 0, initialY = 0;
+    
+    const startDrag = (e) => {
+      isDragging = true;
+      startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+      startY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+      image.style.cursor = 'grabbing';
+      e.preventDefault();
+    };
+    
+    const drag = (e) => {
+      if (!isDragging) return;
+      
+      const currentX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+      const currentY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
+      
+      const deltaX = currentX - startX;
+      const deltaY = currentY - startY;
+      
+      initialX += deltaX;
+      initialY += deltaY;
+      
+      image.style.transform = `translate(${initialX}px, ${initialY}px)`;
+      
+      startX = currentX;
+      startY = currentY;
+    };
+    
+    const endDrag = () => {
+      isDragging = false;
+      image.style.cursor = 'zoom-out';
+    };
+    
+    // Add event listeners
+    image.addEventListener('mousedown', startDrag);
+    image.addEventListener('touchstart', startDrag, { passive: false });
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag, { passive: false });
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+    
+    // Clean up function
+    return () => {
+      image.removeEventListener('mousedown', startDrag);
+      image.removeEventListener('touchstart', startDrag);
+      document.removeEventListener('mousemove', drag);
+      document.removeEventListener('touchmove', drag);
+      document.removeEventListener('mouseup', endDrag);
+      document.removeEventListener('touchend', endDrag);
+      image.style.transform = '';
+      image.style.cursor = 'zoom-in';
+      initialX = 0;
+      initialY = 0;
+    };
+  }
+
   // Calculate optimal zoom based on image dimensions and aspect ratio
   function calculateOptimalZoom(imageElement) {
     const imageRect = imageElement.getBoundingClientRect();
@@ -578,17 +714,35 @@ document.addEventListener("DOMContentLoaded", () => {
     modalPrev.addEventListener('click', () => navigateModal(-1));
     modalNext.addEventListener('click', () => navigateModal(1));
     
-    // Image zoom with responsive scaling
+    // Enhanced image zoom with container resizing
     modalImage.addEventListener('click', () => {
+      const modalImageContainer = document.querySelector('.modal-image-container');
+      const modalInfoOverlay = document.getElementById('modalInfoOverlay');
+      
       if (modalImage.classList.contains('zoomed')) {
-        // Reset zoom
+        // Reset to original size
         modalImage.classList.remove('zoomed');
-        modalImage.style.transform = '';
+        calculateAndApplyFullScreenDimensions(modalImage, modalImageContainer);
+        // Show info overlay when zooming out
+        modalInfoOverlay.style.opacity = '1';
       } else {
-        // Apply responsive zoom
-        const optimalZoom = calculateOptimalZoom(modalImage);
-        modalImage.style.transform = `scale(${optimalZoom})`;
+        // Zoom to larger size while maintaining aspect ratio
+        const currentWidth = parseFloat(modalImageContainer.style.width);
+        const currentHeight = parseFloat(modalImageContainer.style.height);
+        const zoomFactor = 1.6;
+        
+        const newWidth = Math.min(currentWidth * zoomFactor, window.innerWidth * 0.98);
+        const newHeight = Math.min(currentHeight * zoomFactor, window.innerHeight * 0.98);
+        
+        modalImageContainer.style.width = `${newWidth}px`;
+        modalImageContainer.style.height = `${newHeight}px`;
         modalImage.classList.add('zoomed');
+        
+        // Hide info overlay when zoomed for immersive viewing
+        modalInfoOverlay.style.opacity = '0.2';
+        
+        // Enable panning for large zoomed images
+        enableImagePanning(modalImage, modalImageContainer);
       }
     });
     
@@ -675,6 +829,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Initialize info toggle functionality
+  function initInfoToggle() {
+    const modalInfoToggle = document.getElementById('modalInfoToggle');
+    const modalInfoOverlay = document.getElementById('modalInfoOverlay');
+    
+    if (modalInfoToggle && modalInfoOverlay) {
+      modalInfoToggle.addEventListener('click', () => {
+        modalInfoOverlay.classList.toggle('collapsed');
+        
+        // Update toggle icon based on state
+        const toggleIcon = modalInfoToggle.querySelector('.toggle-icon');
+        if (modalInfoOverlay.classList.contains('collapsed')) {
+          toggleIcon.textContent = '▲'; // Up chevron when collapsed (click to expand)
+        } else {
+          toggleIcon.textContent = '▼'; // Down chevron when expanded (click to collapse)
+        }
+      });
+    }
+  }
+
   // Initialize the gallery with portfolio data
   async function initializeGallery() {
     // Load portfolio data
@@ -697,6 +871,9 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Initialize modal listeners
     initModalListeners();
+    
+    // Initialize info toggle
+    initInfoToggle();
     
     // Initialize scroll isolation for right columns
     initScrollIsolation();
