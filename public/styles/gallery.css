@@ -80,7 +80,7 @@ body {
 }
 
 .col-right1::-webkit-scrollbar-thumb:hover {
-  background: rgba(211, 255, 0, 0.5) !important;
+  background: rgba(211, 255, 0, 0.5);
 }
 
 .col-right2 {
@@ -110,7 +110,7 @@ body {
 }
 
 .col-right2::-webkit-scrollbar-thumb:hover {
-  background: rgba(211, 255, 0, 0.5) !important;
+  background: rgba(211, 255, 0, 0.5);
 }
 
 /* Column hover effects - only on desktop */
@@ -120,7 +120,13 @@ body {
     border-color: var(--glass-border-hover);
   }
   
+  /* Note: :has() selector is modern - fallback handled via JavaScript */
   #gallery:has(.col-nav:hover) {
+    grid-template-columns: 25% 12% 31.5% 31.5%;
+  }
+  
+  /* Fallback for browsers without :has() support */
+  #gallery.nav-hovered {
     grid-template-columns: 25% 12% 31.5% 31.5%;
   }
 }
@@ -590,7 +596,13 @@ body {
     grid-template-columns: 30% 5% 32.5% 32.5%;
   }
   
+  /* Note: :has() selector is modern - fallback handled via JavaScript */
   #gallery:has(.col-nav:hover) {
+    grid-template-columns: 30% 15% 27.5% 27.5%;
+  }
+  
+  /* Fallback for browsers without :has() support */
+  #gallery.nav-hovered {
     grid-template-columns: 30% 15% 27.5% 27.5%;
   }
 }

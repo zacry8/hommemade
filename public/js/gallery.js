@@ -98,6 +98,16 @@ document.addEventListener("DOMContentLoaded", () => {
           img.alt = mediaItem.title;
           img.dataset.title = mediaItem.title;
           img.dataset.description = mediaItem.description;
+          
+          // Update hover overlay content
+          const overlay = img.parentElement.querySelector('.img-overlay');
+          if (overlay) {
+            const overlayTitle = overlay.querySelector('.img-overlay-title');
+            const overlayDescription = overlay.querySelector('.img-overlay-description');
+            if (overlayTitle) overlayTitle.textContent = mediaItem.title;
+            if (overlayDescription) overlayDescription.textContent = mediaItem.description;
+          }
+          
           img.style.opacity = '1';
         }, 150);
       }
@@ -649,6 +659,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Add fallback for browsers without :has() support
+  function initNavHoverFallback() {
+    const gallery = document.getElementById('gallery');
+    const colNav = document.querySelector('.col-nav');
+    
+    if (gallery && colNav) {
+      colNav.addEventListener('mouseenter', () => {
+        gallery.classList.add('nav-hovered');
+      });
+      
+      colNav.addEventListener('mouseleave', () => {
+        gallery.classList.remove('nav-hovered');
+      });
+    }
+  }
+
   // Initialize the gallery with portfolio data
   async function initializeGallery() {
     // Load portfolio data
@@ -674,6 +700,9 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Initialize scroll isolation for right columns
     initScrollIsolation();
+    
+    // Initialize navigation hover fallback
+    initNavHoverFallback();
   }
   
   // Isolate right column scroll events from main navigation
