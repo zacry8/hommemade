@@ -80,7 +80,7 @@ body {
 }
 
 .col-right1::-webkit-scrollbar-thumb:hover {
-  background: rgba(211, 255, 0, 0.5);
+  background: rgba(211, 255, 0, 0.5) !important;
 }
 
 .col-right2 {
@@ -110,7 +110,7 @@ body {
 }
 
 .col-right2::-webkit-scrollbar-thumb:hover {
-  background: rgba(211, 255, 0, 0.5);
+  background: rgba(211, 255, 0, 0.5) !important;
 }
 
 /* Column hover effects - only on desktop */
