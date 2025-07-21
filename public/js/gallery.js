@@ -4,32 +4,39 @@ document.addEventListener("DOMContentLoaded", () => {
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   
-  // Enhanced Vercel Image Optimization with proper URL handling
+  // Enhanced Vercel Image Optimization with proper URL handling and fallback
   function getOptimizedImageUrl(src, width = 800, quality = 75) {
     // Only optimize on Vercel-hosted sites
     const hostname = window.location.hostname;
     const isVercel = hostname.includes('vercel.app') || hostname.includes('hommemade');
     
     if (isVercel) {
-      // Convert relative URLs to absolute URLs for Vercel image optimization
-      let imageUrl = src;
-      if (src.startsWith('/') || src.startsWith('./')) {
-        // Convert relative path to absolute URL
-        imageUrl = new URL(src.startsWith('./') ? src.slice(2) : src.slice(1), window.location.origin).href;
-      } else if (!src.startsWith('http')) {
-        // Handle relative paths without leading slash
-        imageUrl = new URL(src, window.location.origin).href;
-      }
+      // Ensure width and quality are in allowed ranges per vercel.json config
+      const allowedSizes = [200, 400, 640, 800, 1080, 1200, 1600, 2048, 3840];
+      const allowedQualities = [25, 50, 75, 80, 85, 90];
       
-      try {
-        return `/_vercel/image?url=${encodeURIComponent(imageUrl)}&w=${width}&q=${quality}`;
-      } catch (error) {
-        console.warn('Failed to optimize image:', src, error);
-        return src; // Fallback to original
+      // Find closest allowed size
+      const optimizedWidth = allowedSizes.reduce((prev, curr) => 
+        Math.abs(curr - width) < Math.abs(prev - width) ? curr : prev
+      );
+      
+      // Find closest allowed quality
+      const optimizedQuality = allowedQualities.reduce((prev, curr) => 
+        Math.abs(curr - quality) < Math.abs(prev - quality) ? curr : prev
+      );
+      
+      // Use relative URLs for local images (starts with /)
+      if (src.startsWith('/')) {
+        try {
+          return `/_vercel/image?url=${encodeURIComponent(src)}&w=${optimizedWidth}&q=${optimizedQuality}`;
+        } catch (error) {
+          console.warn('Failed to optimize image:', src, error);
+          return src; // Fallback to original
+        }
       }
     }
     
-    // Fallback to original for local development
+    // Fallback to original for local development or non-vercel domains
     return src;
   }
   
@@ -149,16 +156,26 @@ document.addEventListener("DOMContentLoaded", () => {
           const optimizedUrl = getOptimizedImageUrl(mediaItem.src, 800, 80);
           console.log('Loading image:', mediaItem.title, '(' + mediaItem.src + ') -> optimized:', optimizedUrl);
           
-          // Add error handling for image loading
+          // Add robust error handling for image loading with immediate fallback
           img.onerror = () => {
-            console.error('Failed to load image:', optimizedUrl, 'Trying original:', mediaItem.src);
-            img.src = mediaItem.src; // Fallback to original
+            console.warn('Optimized image failed:', optimizedUrl, 'Using original:', mediaItem.src);
+            // Immediately try the original image path
+            img.src = mediaItem.src;
+            
+            // If original also fails, remove the broken image
+            img.onerror = () => {
+              console.error('Both optimized and original image failed:', mediaItem.src);
+              // Hide the broken image or show a placeholder
+              img.style.display = 'none';
+            };
           };
           
           img.onload = () => {
-            console.log('Image loaded successfully:', optimizedUrl);
+            console.log('Image loaded successfully:', mediaItem.title);
             // Track that this image is now loaded
             lastLoadedImages.set(imageKey, mediaItem.src);
+            // Ensure image is visible
+            img.style.display = 'block';
           };
           
           img.src = optimizedUrl;
@@ -228,7 +245,20 @@ document.addEventListener("DOMContentLoaded", () => {
       
       const img = document.createElement('img');
       // Optimized thumbnails with smaller size and higher quality
-      img.src = getOptimizedImageUrl(section.thumbnail, 200, 85);
+      const optimizedThumbUrl = getOptimizedImageUrl(section.thumbnail, 200, 85);
+      
+      // Add fallback for navigation thumbnails
+      img.onerror = () => {
+        console.warn('Navigation thumbnail failed:', optimizedThumbUrl, 'Using original:', section.thumbnail);
+        img.src = section.thumbnail;
+        
+        img.onerror = () => {
+          console.error('Navigation thumbnail failed completely:', section.thumbnail);
+          img.style.display = 'none';
+        };
+      };
+      
+      img.src = optimizedThumbUrl;
       img.alt = section.title;
       img.loading = 'lazy';
       img.decoding = 'async';
@@ -360,9 +390,22 @@ document.addEventListener("DOMContentLoaded", () => {
         
         imgItem.appendChild(pdfContainer);
       } else {
-        // Default to optimized image loading
+        // Default to optimized image loading with fallback
         const img = document.createElement('img');
-        img.src = getOptimizedImageUrl(mediaItem.src, 800, 80);
+        const optimizedUrl = getOptimizedImageUrl(mediaItem.src, 800, 80);
+        
+        // Add robust error handling
+        img.onerror = () => {
+          console.warn('Right column optimized image failed:', optimizedUrl, 'Using original:', mediaItem.src);
+          img.src = mediaItem.src;
+          
+          img.onerror = () => {
+            console.error('Right column image failed completely:', mediaItem.src);
+            img.style.display = 'none';
+          };
+        };
+        
+        img.src = optimizedUrl;
         img.alt = mediaItem.title;
         img.loading = 'lazy';
         img.decoding = 'async';

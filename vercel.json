@@ -2,8 +2,15 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "images": {
-    "sizes": [400, 800, 1200, 1600],
-    "formats": ["image/webp"],
+    "sizes": [200, 400, 640, 800, 1080, 1200, 1600, 2048, 3840],
+    "qualities": [25, 50, 75, 80, 85, 90],
+    "formats": ["image/webp", "image/avif"],
+    "localPatterns": [
+      {
+        "pathname": "/portfolio/**",
+        "search": ""
+      }
+    ],
     "minimumCacheTTL": 2678400
   }
 }
