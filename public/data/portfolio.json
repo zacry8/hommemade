@@ -29,73 +29,73 @@
         "id": "illustration",
         "title": "Illustration & Graphics",
         "description": "Creative illustration and graphic design work",
-        "thumbnail": "portfolio/branding/playoutside__earthday-merch_drop.png",
+        "thumbnail": "portfolio/branding/playoutside__earthday-merch_drop.jpg",
         "media": [
           {
-            "src": "portfolio/branding/playoutside__earthday-merch_drop.png",
+            "src": "portfolio/branding/playoutside__earthday-merch_drop.jpg",
             "title": "Play Outside - Earth Day Limited Merch Drop",
             "description": "Eco-themed shirt & tote collection graphic for a one-day-only Earth Day release. Grass-texture backdrop, hand-painted smiling-globe badge, and playful slab-serif headline drive urgency while spotlighting the 'plant-a-mangrove' impact.",
             "type": "image",
             "tags": ["merch", "earth-day", "sustainability", "tshirt", "tote"]
           },
           {
-            "src": "portfolio/branding/playoutside__carousel_slide-for-doing-you.png",
+            "src": "portfolio/branding/playoutside__carousel_slide-for-doing-you.jpg",
             "title": "Play Outside Earth Day Carousel - Slide A \"For Doing You\"",
             "description": "First frame of the Earth Day launch carousel — split-panel lifestyle shot with halftone accents and oversized slab-serif headline to set the campaign's playful, print-zine tone.",
             "type": "image",
             "tags": ["carousel", "lifestyle", "halftone", "campaign", "earth-day"]
           },
           {
-            "src": "portfolio/branding/playoutside__carousel_slide-your-pahrt.png",
+            "src": "portfolio/branding/playoutside__carousel_slide-your-pahrt.jpg",
             "title": "Play Outside Earth Day Carousel - Slide B \"Your Pahrt\"",
             "description": "Second carousel frame that pivots the copy to invite viewers to 'do their pahrt,' featuring a bold arrow swipe, dot-screen texture, and shop call-to-action lock-up.",
             "type": "image",
             "tags": ["carousel", "cta", "arrow", "halftone", "earth-day"]
           },
           {
-            "src": "portfolio/branding/playoutside__carousel_slide-hand-pop.png",
+            "src": "portfolio/branding/playoutside__carousel_slide-hand-pop.jpg",
             "title": "Play Outside Earth Day Carousel - Slide C \"Hand Pop\"",
             "description": "Dynamic low-angle pose with an outstretched hand plus floating smiley-globe badge and repeat-text wall — designed to stop thumbs mid-scroll.",
             "type": "image",
             "tags": ["carousel", "hero", "smiley-earth", "social", "earth-day"]
           },
           {
-            "src": "portfolio/branding/playoutside__carousel_slide-thanks.png",
+            "src": "portfolio/branding/playoutside__carousel_slide-thanks.jpg",
             "title": "Play Outside Earth Day Carousel - Slide D \"Thanks For...\"",
             "description": "Closing 'thanks' frame celebrates purchasers by spotlighting the back print and mangrove impact statement; collage arrow guides the eye to the tee mock-up cut-out.",
             "type": "image",
             "tags": ["carousel", "thank-you", "impact", "collage", "earth-day"]
           },
           {
-            "src": "portfolio/branding/playoutside__product_shirt-front_smiley-earth.png",
+            "src": "portfolio/branding/playoutside__product_shirt-front_smiley-earth.jpg",
             "title": "Play Outside Smiley-Earth Tee - Front Graphic",
             "description": "Product flatlay of the flagship Earth-Day tee featuring the watercolor smiley globe. Grass-texture backdrop reinforces the outdoors ethos.",
             "type": "image",
             "tags": ["product", "t-shirt", "smiley-earth", "flatlay", "merch"]
           },
           {
-            "src": "portfolio/branding/playoutside__product_tote-smiley-earth_black.png",
+            "src": "portfolio/branding/playoutside__product_tote-smiley-earth_black.jpg",
             "title": "Play Outside Smiley-Earth Tote - Black",
             "description": "Black canvas tote mock-up with the same smiley-globe mark, overlaid on punchy 'Totelly Awesome' typographic background for social roll-outs.",
             "type": "image",
             "tags": ["product", "tote", "smiley-earth", "mockup", "merch"]
           },
           {
-            "src": "portfolio/branding/playoutside__product_shirt-back_world-map.png",
+            "src": "portfolio/branding/playoutside__product_shirt-back_world-map.jpg",
             "title": "Play Outside World-Map Tee - Back Graphic",
             "description": "Back-print design depicting an illustrated biome map that labels oceans, deserts, and forests — tying the brand's 'protect the places we play' narrative together.",
             "type": "image",
             "tags": ["product", "t-shirt", "illustrated-map", "back-print", "merch"]
           },
           {
-            "src": "portfolio/branding/playoutside__product_tote-mangrove-natural.png",
+            "src": "portfolio/branding/playoutside__product_tote-mangrove-natural.jpg",
             "title": "Play Outside Mangrove Impact Tote - Natural Canvas",
             "description": "Natural cotton tote bearing the bold statement 'I planted a mangrove tree just by buying this tote,' reinforcing the one-for-one conservation pledge.",
             "type": "image",
             "tags": ["product", "tote", "impact", "typography", "merch"]
           },
           {
-            "src": "portfolio/branding/playoutside__product_shirt-front_ahrt-logo.png",
+            "src": "portfolio/branding/playoutside__product_shirt-front_ahrt-logo.jpg",
             "title": "AHrT Micro-Logo Tee - Minimal Front Hit",
             "description": "Clean chest-hit tee sporting the archival AHrT umbrella mark; shot on faux-grass texture to match the full Earth Day collection aesthetic.",
             "type": "image",
