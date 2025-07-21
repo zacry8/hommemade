@@ -37,6 +37,24 @@ document.addEventListener("DOMContentLoaded", () => {
   let portfolioData = null;
   let currentSectionIndex = 0;
   let currentMediaIndex = 0;
+  
+  // Image loading state management
+  let lastLoadedImages = new Map(); // Track what's currently loaded in each column
+  
+  // Debounce utility for performance optimization
+  function debounce(func, wait, immediate) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        timeout = null;
+        if (!immediate) func(...args);
+      };
+      const callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func(...args);
+    };
+  }
 
   // Intersection Observer for lazy loading and performance
   const observerOptions = {
@@ -89,6 +107,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
     });
+    
+    // Debug: log total items to verify all 21 are included
+    if (allItems.length > 0) {
+      console.log(`Gallery has ${allItems.length} total portfolio items available`);
+    }
+    
     return allItems;
   }
   
@@ -109,13 +133,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const mediaItem = allItems[itemIndex % allItems.length];
       
       if (mediaItem) {
+        const imageKey = `col1-${index}`;
+        const currentlyLoaded = lastLoadedImages.get(imageKey);
+        
+        // Skip loading if this exact image is already displayed
+        if (currentlyLoaded === mediaItem.src) {
+          return;
+        }
+        
         img.style.transition = 'opacity 0.3s ease';
         img.style.opacity = '0.7';
         
         setTimeout(() => {
           // Optimized image loading with Vercel Image API
           const optimizedUrl = getOptimizedImageUrl(mediaItem.src, 800, 80);
-          console.log('Loading image:', mediaItem.src, '-> optimized:', optimizedUrl);
+          console.log('Loading image:', mediaItem.title, '(' + mediaItem.src + ') -> optimized:', optimizedUrl);
           
           // Add error handling for image loading
           img.onerror = () => {
@@ -125,6 +157,8 @@ document.addEventListener("DOMContentLoaded", () => {
           
           img.onload = () => {
             console.log('Image loaded successfully:', optimizedUrl);
+            // Track that this image is now loaded
+            lastLoadedImages.set(imageKey, mediaItem.src);
           };
           
           img.src = optimizedUrl;
@@ -871,20 +905,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Test basic image loading
-  function testImageLoading() {
-    console.log('Testing basic image loading...');
-    const testImg = new Image();
-    testImg.onload = () => console.log('Test image loaded successfully');
-    testImg.onerror = () => console.error('Test image failed to load');
-    testImg.src = 'portfolio/graphic-design/AHrT-Evil-Eye-Brand-Identity-1.jpg';
-  }
-
   // Initialize the gallery with portfolio data
   async function initializeGallery() {
-    // Test basic image loading first
-    testImageLoading();
-    
     // Load portfolio data
     await loadPortfolioData();
     
@@ -1099,7 +1121,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
     
-    window.addEventListener("scroll", updateNav);
+    // Create debounced version of updateNav for better performance
+    const debouncedUpdateNav = debounce(updateNav, 16); // ~60fps
+    window.addEventListener("scroll", debouncedUpdateNav);
     updateNav();
     
     window.addEventListener("resize", () => {
