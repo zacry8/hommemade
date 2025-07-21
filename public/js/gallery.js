@@ -94,11 +94,16 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Enhanced Vercel Image Optimization with validation and self-healing
   function getOptimizedImageUrl(src, width = 800, quality = 75) {
+    console.log(`🔍 Optimizing image: ${src} (${width}x${quality})`);
+    
     // Only optimize on Vercel-hosted sites
     const hostname = window.location.hostname;
     const isVercel = hostname.includes('vercel.app') || hostname.includes('hommemade');
     
+    console.log(`🌐 Hostname: ${hostname}, isVercel: ${isVercel}`);
+    
     if (!isVercel) {
+      console.log('❌ Not on Vercel, using original image');
       return src; // Local development fallback
     }
     
@@ -110,10 +115,14 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // If Vercel optimization is known to be unavailable, return original
     if (!imageOptimization.stats.vercelAvailable) {
+      console.log('⚠️ Vercel optimization disabled, using original image');
       return src;
     }
     
     try {
+      // Ensure src starts with / for local images
+      const imageSrc = src.startsWith('/') ? src : `/${src}`;
+      
       // Find closest allowed size
       const optimizedWidth = imageOptimization.config.allowedSizes.reduce((prev, curr) => 
         Math.abs(curr - width) < Math.abs(prev - width) ? curr : prev
@@ -129,19 +138,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const format = imageOptimization.getSupportedFormat();
       
       // Build optimization URL with format specification
-      let optimizationUrl = `/_vercel/image?url=${encodeURIComponent(src)}&w=${optimizedWidth}&q=${optimizedQuality}`;
+      let optimizationUrl = `/_vercel/image?url=${encodeURIComponent(imageSrc)}&w=${optimizedWidth}&q=${optimizedQuality}`;
       
       // Add format parameter for WebP/AVIF
       if (format !== 'image/jpeg') {
-        optimizationUrl += `&f=${format.split('/')[1]}`;
+        optimizationUrl += `&fm=${format.split('/')[1]}`;
       }
       
       imageOptimization.stats.attempts++;
       
+      console.log(`✅ Generated optimized URL: ${optimizationUrl}`);
       return optimizationUrl;
       
     } catch (error) {
-      console.warn('Failed to build optimized URL:', src, error);
+      console.warn('❌ Failed to build optimized URL:', src, error);
       imageOptimization.stats.failures++;
       return src; // Fallback to original
     }
@@ -230,6 +240,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return allItems;
   }
   
+  // Track last scroll position to prevent unnecessary updates
+  let lastScrollPosition = -1;
+  
   // Update only Column 1 (left) with portfolio items based on scroll position
   function updateMainColumns(scrollProgress) {
     const allItems = getAllPortfolioItems();
@@ -238,6 +251,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Calculate which items to show based on scroll position
     const itemsPerView = 3; // Only Column 1 items
     const startIndex = Math.floor(scrollProgress * (allItems.length - itemsPerView + 1));
+    
+    // Debounce: Skip if we're showing the same images
+    if (lastScrollPosition === startIndex) {
+      return;
+    }
+    lastScrollPosition = startIndex;
     
     // Get only Column 1 (left) images
     const leftColumnImages = document.querySelectorAll('.col-left img');
@@ -258,10 +277,14 @@ document.addEventListener("DOMContentLoaded", () => {
         img.style.transition = 'opacity 0.3s ease';
         img.style.opacity = '0.7';
         
-        setTimeout(() => {
+        // Cancel any pending image loads
+        if (img.pendingLoad) {
+          clearTimeout(img.pendingLoad);
+        }
+        
+        img.pendingLoad = setTimeout(() => {
           // Optimized image loading with Vercel Image API
           const optimizedUrl = getOptimizedImageUrl(mediaItem.src, 800, 80);
-          console.log('Loading image:', mediaItem.title, '(' + mediaItem.src + ') -> optimized:', optimizedUrl);
           
           // Self-healing image loading with automatic optimization tracking
           img.onerror = () => {
@@ -301,9 +324,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (wasOptimizedUrl) {
               // Track successful optimization
               imageOptimization.stats.successes++;
-              console.log('Optimized image loaded successfully:', mediaItem.title);
+              console.log('✅ Optimized image loaded:', mediaItem.title);
             } else {
-              console.log('Original image loaded successfully:', mediaItem.title);
+              console.log('📁 Original image loaded:', mediaItem.title);
             }
             
             // Track that this image is now loaded
@@ -319,6 +342,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 imageOptimization.stats.vercelAvailable = true;
               }
             }
+            
+            // Clear pending load
+            img.pendingLoad = null;
           };
           
           img.src = optimizedUrl;
@@ -356,8 +382,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
       
-      // Update right columns with current folder content
-      generateFolderRightColumns(activeSectionIndex);
+      // Update right columns with current folder content (only if section changed)
+      if (window.lastActiveSectionIndex !== activeSectionIndex) {
+        generateFolderRightColumns(activeSectionIndex);
+        window.lastActiveSectionIndex = activeSectionIndex;
+      }
     }
   }
   
@@ -1218,6 +1247,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
   
+  // Essential images for preloading
+  const ESSENTIAL_IMAGES = [
+    '/portfolio/branding/ahrt__ad_neon-classic.png',
+    '/portfolio/branding/playoutside__earthday-merch_drop.png',
+    '/portfolio/graphic-design/AHrT-Evil-Eye-Brand-Identity-1.jpg'
+  ];
+
   // Service Worker registration for offline image caching
   async function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
@@ -1232,18 +1268,24 @@ document.addEventListener("DOMContentLoaded", () => {
             type: 'PRELOAD_IMAGES',
             urls: ESSENTIAL_IMAGES
           }, [messageChannel.port2]);
+          console.log('📥 Preloading essential images via Service Worker');
         }
         
         return registration;
       } catch (error) {
-        console.warn('Service Worker registration failed:', error);
+        console.warn('🚨 Service Worker registration failed:', error);
         return null;
       }
+    } else {
+      console.warn('⚠️ Service Worker not supported in this browser');
+      return null;
     }
   }
   
   // Initialize the gallery with portfolio data
   async function initializeGallery() {
+    console.log('🎯 Initializing future-proof image optimization system...');
+    
     // Register Service Worker for offline image caching
     await registerServiceWorker();
     
@@ -1251,6 +1293,23 @@ document.addEventListener("DOMContentLoaded", () => {
     await loadPortfolioData();
     
     if (portfolioData) {
+      // Verify all 21 portfolio items are accessible
+      const allItems = getAllPortfolioItems();
+      console.log(`📊 Portfolio verification: ${allItems.length} items found (expected: 21)`);
+      
+      if (allItems.length !== 21) {
+        console.warn('⚠️ Portfolio item count mismatch! Expected 21, found:', allItems.length);
+        // Log missing items for debugging
+        const expectedCount = portfolioData.generated.totalMedia || 21;
+        console.log('📋 Portfolio data shows total media:', expectedCount);
+        
+        // Debug: Show all items to find what's missing
+        console.log('🔍 Available portfolio items:');
+        allItems.forEach((item, index) => {
+          console.log(`  ${index + 1}: ${item.title} (${item.src})`);
+        });
+      }
+      
       // Generate dynamic content
       generateNavigation();
       generateGalleryContent(); // Left column placeholders
@@ -1262,18 +1321,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       
       // Initial Vercel optimization check
-      console.log('🎯 Initializing future-proof image optimization system...');
+      console.log('🔧 Checking Vercel optimization availability...');
       await imageOptimization.checkVercelOptimization();
       
-      // Verify all 21 portfolio items are accessible
-      const allItems = getAllPortfolioItems();
-      console.log(`📊 Portfolio verification: ${allItems.length} items found (expected: 21)`);
-      
-      if (allItems.length !== 21) {
-        console.warn('⚠️ Portfolio item count mismatch! Expected 21, found:', allItems.length);
-        // Log missing items for debugging
-        const expectedCount = portfolioData.generated.totalMedia || 21;
-        console.log('📋 Portfolio data shows total media:', expectedCount);
+      if (imageOptimization.stats.vercelAvailable) {
+        console.log('✅ Vercel image optimization is available');
+      } else {
+        console.warn('⚠️ Vercel image optimization is not available');
       }
       
       // Set up periodic monitoring
@@ -1300,6 +1354,8 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         }
       }, 30000); // Every 30 seconds
+      
+      console.log('🚀 Gallery initialization complete');
     }
     
     // Initialize lazy loading
