@@ -84,6 +84,13 @@ body {
   .col-right1::-webkit-scrollbar-thumb:hover {
     background: rgba(211, 255, 0, 0.5);
   }
+  
+  /* Fallback for browsers that don't support hover on scrollbar */
+  @supports not (selector(::-webkit-scrollbar-thumb:hover)) {
+    .col-right1::-webkit-scrollbar-thumb {
+      background: rgba(211, 255, 0, 0.4);
+    }
+  }
 }
 
 .col-right2 {
@@ -115,6 +122,13 @@ body {
 
   .col-right2::-webkit-scrollbar-thumb:hover {
     background: rgba(211, 255, 0, 0.5);
+  }
+  
+  /* Fallback for browsers that don't support hover on scrollbar */
+  @supports not (selector(::-webkit-scrollbar-thumb:hover)) {
+    .col-right2::-webkit-scrollbar-thumb {
+      background: rgba(211, 255, 0, 0.4);
+    }
   }
 }
 

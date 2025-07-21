@@ -60,8 +60,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Load portfolio data from JSON
   async function loadPortfolioData() {
     try {
+      console.log('Loading portfolio data...');
       const response = await fetch('data/portfolio.json');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       portfolioData = await response.json();
+      console.log('Portfolio data loaded successfully:', portfolioData);
       return portfolioData;
     } catch (error) {
       console.error('Failed to load portfolio data:', error);
@@ -109,7 +114,20 @@ document.addEventListener("DOMContentLoaded", () => {
         
         setTimeout(() => {
           // Optimized image loading with Vercel Image API
-          img.src = getOptimizedImageUrl(mediaItem.src, 800, 80);
+          const optimizedUrl = getOptimizedImageUrl(mediaItem.src, 800, 80);
+          console.log('Loading image:', mediaItem.src, '-> optimized:', optimizedUrl);
+          
+          // Add error handling for image loading
+          img.onerror = () => {
+            console.error('Failed to load image:', optimizedUrl, 'Trying original:', mediaItem.src);
+            img.src = mediaItem.src; // Fallback to original
+          };
+          
+          img.onload = () => {
+            console.log('Image loaded successfully:', optimizedUrl);
+          };
+          
+          img.src = optimizedUrl;
           img.alt = mediaItem.title;
           img.dataset.title = mediaItem.title;
           img.dataset.description = mediaItem.description;
@@ -193,8 +211,12 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Generate main gallery content from portfolio data
   function generateGalleryContent() {
-    if (!portfolioData) return;
+    if (!portfolioData) {
+      console.error('No portfolio data available for gallery generation');
+      return;
+    }
     
+    console.log('Generating gallery content...');
     // Only populate the left column - right columns get static content
     const leftColumn = document.querySelector('#col1');
     
@@ -849,8 +871,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Test basic image loading
+  function testImageLoading() {
+    console.log('Testing basic image loading...');
+    const testImg = new Image();
+    testImg.onload = () => console.log('Test image loaded successfully');
+    testImg.onerror = () => console.error('Test image failed to load');
+    testImg.src = 'portfolio/graphic-design/AHrT-Evil-Eye-Brand-Identity-1.jpg';
+  }
+
   // Initialize the gallery with portfolio data
   async function initializeGallery() {
+    // Test basic image loading first
+    testImageLoading();
+    
     // Load portfolio data
     await loadPortfolioData();
     
