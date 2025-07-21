@@ -4,40 +4,147 @@ document.addEventListener("DOMContentLoaded", () => {
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   
-  // Enhanced Vercel Image Optimization with proper URL handling and fallback
+  // Future-Proof Image Optimization System with validation and self-healing
+  const imageOptimization = {
+    // Track optimization success/failure rates
+    stats: {
+      attempts: 0,
+      successes: 0,
+      failures: 0,
+      vercelAvailable: true,
+      lastChecked: Date.now()
+    },
+    
+    // Vercel configuration (sync with vercel.json)
+    config: {
+      allowedSizes: [200, 400, 640, 800, 1080, 1200, 1600, 2048, 3840],
+      allowedQualities: [25, 50, 75, 80, 85, 90],
+      formats: ['image/webp', 'image/avif'],
+      fallbackFormat: 'image/jpeg'
+    },
+    
+    // Validate Vercel optimization availability
+    async checkVercelOptimization() {
+      try {
+        // Test with a small, known image
+        const testUrl = '/_vercel/image?url=%2Fportfolio%2Fbranding%2Fahrt__ad_neon-classic.png&w=200&q=75';
+        const response = await fetch(testUrl, { method: 'HEAD' });
+        
+        this.stats.vercelAvailable = response.ok;
+        this.stats.lastChecked = Date.now();
+        
+        if (!response.ok) {
+          console.warn('Vercel image optimization not available:', response.status);
+        }
+        
+        return response.ok;
+      } catch (error) {
+        console.warn('Failed to validate Vercel optimization:', error);
+        this.stats.vercelAvailable = false;
+        this.stats.lastChecked = Date.now();
+        return false;
+      }
+    },
+    
+    // Intelligent format selection based on browser support
+    getSupportedFormat() {
+      if (typeof window === 'undefined') return 'image/jpeg';
+      
+      // Check for AVIF support
+      const canvas = document.createElement('canvas');
+      canvas.width = 1;
+      canvas.height = 1;
+      
+      try {
+        if (canvas.toDataURL('image/avif').indexOf('image/avif') === 5) {
+          return 'image/avif';
+        }
+      } catch (e) {}
+      
+      // Check for WebP support
+      try {
+        if (canvas.toDataURL('image/webp').indexOf('image/webp') === 5) {
+          return 'image/webp';
+        }
+      } catch (e) {}
+      
+      return 'image/jpeg';
+    },
+    
+    // Dynamic quality adjustment based on connection
+    getOptimalQuality(requestedQuality = 75) {
+      if (navigator.connection) {
+        const effectiveType = navigator.connection.effectiveType;
+        
+        switch (effectiveType) {
+          case 'slow-2g':
+          case '2g':
+            return Math.min(requestedQuality, 50);
+          case '3g':
+            return Math.min(requestedQuality, 75);
+          case '4g':
+          default:
+            return requestedQuality;
+        }
+      }
+      
+      return requestedQuality;
+    }
+  };
+  
+  // Enhanced Vercel Image Optimization with validation and self-healing
   function getOptimizedImageUrl(src, width = 800, quality = 75) {
     // Only optimize on Vercel-hosted sites
     const hostname = window.location.hostname;
     const isVercel = hostname.includes('vercel.app') || hostname.includes('hommemade');
     
-    if (isVercel) {
-      // Ensure width and quality are in allowed ranges per vercel.json config
-      const allowedSizes = [200, 400, 640, 800, 1080, 1200, 1600, 2048, 3840];
-      const allowedQualities = [25, 50, 75, 80, 85, 90];
-      
+    if (!isVercel) {
+      return src; // Local development fallback
+    }
+    
+    // Check if Vercel optimization was recently validated
+    const timeSinceCheck = Date.now() - imageOptimization.stats.lastChecked;
+    if (timeSinceCheck > 300000 && imageOptimization.stats.vercelAvailable) { // 5 minutes
+      imageOptimization.checkVercelOptimization();
+    }
+    
+    // If Vercel optimization is known to be unavailable, return original
+    if (!imageOptimization.stats.vercelAvailable) {
+      return src;
+    }
+    
+    try {
       // Find closest allowed size
-      const optimizedWidth = allowedSizes.reduce((prev, curr) => 
+      const optimizedWidth = imageOptimization.config.allowedSizes.reduce((prev, curr) => 
         Math.abs(curr - width) < Math.abs(prev - width) ? curr : prev
       );
       
-      // Find closest allowed quality
-      const optimizedQuality = allowedQualities.reduce((prev, curr) => 
-        Math.abs(curr - quality) < Math.abs(prev - quality) ? curr : prev
+      // Dynamic quality optimization
+      const optimalQuality = imageOptimization.getOptimalQuality(quality);
+      const optimizedQuality = imageOptimization.config.allowedQualities.reduce((prev, curr) => 
+        Math.abs(curr - optimalQuality) < Math.abs(prev - optimalQuality) ? curr : prev
       );
       
-      // Use relative URLs for local images (starts with /)
-      if (src.startsWith('/')) {
-        try {
-          return `/_vercel/image?url=${encodeURIComponent(src)}&w=${optimizedWidth}&q=${optimizedQuality}`;
-        } catch (error) {
-          console.warn('Failed to optimize image:', src, error);
-          return src; // Fallback to original
-        }
+      // Get best supported format
+      const format = imageOptimization.getSupportedFormat();
+      
+      // Build optimization URL with format specification
+      let optimizationUrl = `/_vercel/image?url=${encodeURIComponent(src)}&w=${optimizedWidth}&q=${optimizedQuality}`;
+      
+      // Add format parameter for WebP/AVIF
+      if (format !== 'image/jpeg') {
+        optimizationUrl += `&f=${format.split('/')[1]}`;
       }
+      
+      imageOptimization.stats.attempts++;
+      
+      return optimizationUrl;
+      
+    } catch (error) {
+      console.warn('Failed to build optimized URL:', src, error);
+      imageOptimization.stats.failures++;
+      return src; // Fallback to original
     }
-    
-    // Fallback to original for local development or non-vercel domains
-    return src;
   }
   
   // Portfolio data - will be loaded from JSON
@@ -156,26 +263,62 @@ document.addEventListener("DOMContentLoaded", () => {
           const optimizedUrl = getOptimizedImageUrl(mediaItem.src, 800, 80);
           console.log('Loading image:', mediaItem.title, '(' + mediaItem.src + ') -> optimized:', optimizedUrl);
           
-          // Add robust error handling for image loading with immediate fallback
+          // Self-healing image loading with automatic optimization tracking
           img.onerror = () => {
-            console.warn('Optimized image failed:', optimizedUrl, 'Using original:', mediaItem.src);
-            // Immediately try the original image path
-            img.src = mediaItem.src;
+            const wasOptimizedUrl = optimizedUrl.includes('/_vercel/image');
             
-            // If original also fails, remove the broken image
+            if (wasOptimizedUrl) {
+              // Track optimization failure
+              imageOptimization.stats.failures++;
+              console.warn('Optimized image failed:', optimizedUrl, 'Using original:', mediaItem.src);
+              
+              // Try original image
+              img.src = mediaItem.src;
+              
+              // If failure rate is high, temporarily disable optimization
+              const failureRate = imageOptimization.stats.failures / imageOptimization.stats.attempts;
+              if (failureRate > 0.5 && imageOptimization.stats.attempts > 5) {
+                console.warn('High optimization failure rate detected, temporarily disabling Vercel optimization');
+                imageOptimization.stats.vercelAvailable = false;
+                imageOptimization.stats.lastChecked = Date.now();
+              }
+            } else {
+              console.error('Original image also failed:', mediaItem.src);
+              // Hide broken image and show placeholder
+              img.style.display = 'none';
+            }
+            
+            // Secondary fallback for original image failures
             img.onerror = () => {
               console.error('Both optimized and original image failed:', mediaItem.src);
-              // Hide the broken image or show a placeholder
               img.style.display = 'none';
             };
           };
           
           img.onload = () => {
-            console.log('Image loaded successfully:', mediaItem.title);
+            const wasOptimizedUrl = optimizedUrl.includes('/_vercel/image');
+            
+            if (wasOptimizedUrl) {
+              // Track successful optimization
+              imageOptimization.stats.successes++;
+              console.log('Optimized image loaded successfully:', mediaItem.title);
+            } else {
+              console.log('Original image loaded successfully:', mediaItem.title);
+            }
+            
             // Track that this image is now loaded
             lastLoadedImages.set(imageKey, mediaItem.src);
             // Ensure image is visible
             img.style.display = 'block';
+            
+            // Re-enable optimization if success rate improves
+            if (!imageOptimization.stats.vercelAvailable) {
+              const successRate = imageOptimization.stats.successes / imageOptimization.stats.attempts;
+              if (successRate > 0.7 && imageOptimization.stats.attempts > 10) {
+                console.log('Image loading stabilized, re-enabling Vercel optimization');
+                imageOptimization.stats.vercelAvailable = true;
+              }
+            }
           };
           
           img.src = optimizedUrl;
@@ -247,15 +390,28 @@ document.addEventListener("DOMContentLoaded", () => {
       // Optimized thumbnails with smaller size and higher quality
       const optimizedThumbUrl = getOptimizedImageUrl(section.thumbnail, 200, 85);
       
-      // Add fallback for navigation thumbnails
+      // Self-healing navigation thumbnail loading
       img.onerror = () => {
-        console.warn('Navigation thumbnail failed:', optimizedThumbUrl, 'Using original:', section.thumbnail);
+        const wasOptimizedUrl = optimizedThumbUrl.includes('/_vercel/image');
+        
+        if (wasOptimizedUrl) {
+          imageOptimization.stats.failures++;
+          console.warn('Navigation thumbnail optimization failed:', optimizedThumbUrl, 'Using original:', section.thumbnail);
+        }
+        
         img.src = section.thumbnail;
         
         img.onerror = () => {
           console.error('Navigation thumbnail failed completely:', section.thumbnail);
           img.style.display = 'none';
         };
+      };
+      
+      img.onload = () => {
+        const wasOptimizedUrl = optimizedThumbUrl.includes('/_vercel/image');
+        if (wasOptimizedUrl) {
+          imageOptimization.stats.successes++;
+        }
       };
       
       img.src = optimizedThumbUrl;
@@ -394,15 +550,28 @@ document.addEventListener("DOMContentLoaded", () => {
         const img = document.createElement('img');
         const optimizedUrl = getOptimizedImageUrl(mediaItem.src, 800, 80);
         
-        // Add robust error handling
+        // Self-healing right column image loading
         img.onerror = () => {
-          console.warn('Right column optimized image failed:', optimizedUrl, 'Using original:', mediaItem.src);
+          const wasOptimizedUrl = optimizedUrl.includes('/_vercel/image');
+          
+          if (wasOptimizedUrl) {
+            imageOptimization.stats.failures++;
+            console.warn('Right column optimized image failed:', optimizedUrl, 'Using original:', mediaItem.src);
+          }
+          
           img.src = mediaItem.src;
           
           img.onerror = () => {
             console.error('Right column image failed completely:', mediaItem.src);
             img.style.display = 'none';
           };
+        };
+        
+        img.onload = () => {
+          const wasOptimizedUrl = optimizedUrl.includes('/_vercel/image');
+          if (wasOptimizedUrl) {
+            imageOptimization.stats.successes++;
+          }
         };
         
         img.src = optimizedUrl;
@@ -606,7 +775,29 @@ document.addEventListener("DOMContentLoaded", () => {
     modalInfoOverlay.classList.remove('collapsed');
     
     // High-quality optimized images for modal display
-    modalImage.src = getOptimizedImageUrl(src, 2000, 92);
+    const modalOptimizedUrl = getOptimizedImageUrl(src, 2000, 92);
+    
+    // Self-healing modal image loading
+    modalImage.onerror = () => {
+      const wasOptimizedUrl = modalOptimizedUrl.includes('/_vercel/image');
+      
+      if (wasOptimizedUrl) {
+        imageOptimization.stats.failures++;
+        console.warn('Modal optimized image failed:', modalOptimizedUrl, 'Using original:', src);
+        modalImage.src = src;
+      } else {
+        console.error('Modal original image failed:', src);
+      }
+    };
+    
+    modalImage.onload = () => {
+      const wasOptimizedUrl = modalOptimizedUrl.includes('/_vercel/image');
+      if (wasOptimizedUrl) {
+        imageOptimization.stats.successes++;
+      }
+    };
+    
+    modalImage.src = modalOptimizedUrl;
     modalImage.alt = title;
     modalTitle.textContent = title;
     modalDescription.textContent = description;
@@ -948,8 +1139,114 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Performance monitoring and diagnostics
+  const performanceMonitor = {
+    metrics: {
+      imageLoadTimes: [],
+      optimizationSavings: 0,
+      totalBytesLoaded: 0,
+      errorCount: 0
+    },
+    
+    // Track image loading performance
+    trackImageLoad(url, loadTime, wasOptimized, fileSize = 0) {
+      this.metrics.imageLoadTimes.push({
+        url,
+        loadTime,
+        wasOptimized,
+        fileSize,
+        timestamp: Date.now()
+      });
+      
+      this.metrics.totalBytesLoaded += fileSize;
+      
+      // Estimate optimization savings (WebP typically 25-35% smaller)
+      if (wasOptimized && fileSize > 0) {
+        this.metrics.optimizationSavings += fileSize * 0.3;
+      }
+    },
+    
+    // Get performance summary
+    getSummary() {
+      const { imageLoadTimes, optimizationSavings, totalBytesLoaded, errorCount } = this.metrics;
+      const avgLoadTime = imageLoadTimes.length > 0 ? 
+        imageLoadTimes.reduce((sum, img) => sum + img.loadTime, 0) / imageLoadTimes.length : 0;
+      
+      return {
+        totalImages: imageLoadTimes.length,
+        averageLoadTime: Math.round(avgLoadTime),
+        optimizedImages: imageLoadTimes.filter(img => img.wasOptimized).length,
+        estimatedSavings: Math.round(optimizationSavings / 1024) + ' KB',
+        totalDataTransfer: Math.round(totalBytesLoaded / 1024) + ' KB',
+        errorRate: imageLoadTimes.length > 0 ? (errorCount / imageLoadTimes.length * 100).toFixed(1) + '%' : '0%'
+      };
+    },
+    
+    // Monitor Vercel API health
+    async checkAPIHealth() {
+      const testImages = [
+        '/portfolio/branding/ahrt__ad_neon-classic.png',
+        '/portfolio/branding/playoutside__earthday-merch_drop.png'
+      ];
+      
+      const results = [];
+      
+      for (const testImage of testImages) {
+        const startTime = performance.now();
+        try {
+          const optimizedUrl = getOptimizedImageUrl(testImage, 400, 75);
+          const response = await fetch(optimizedUrl, { method: 'HEAD' });
+          const loadTime = performance.now() - startTime;
+          
+          results.push({
+            image: testImage,
+            success: response.ok,
+            loadTime: Math.round(loadTime),
+            status: response.status
+          });
+        } catch (error) {
+          results.push({
+            image: testImage,
+            success: false,
+            loadTime: -1,
+            error: error.message
+          });
+        }
+      }
+      
+      return results;
+    }
+  };
+  
+  // Service Worker registration for offline image caching
+  async function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        console.log('🔧 Service Worker registered successfully:', registration.scope);
+        
+        // Preload essential images
+        if (registration.active) {
+          const messageChannel = new MessageChannel();
+          registration.active.postMessage({
+            type: 'PRELOAD_IMAGES',
+            urls: ESSENTIAL_IMAGES
+          }, [messageChannel.port2]);
+        }
+        
+        return registration;
+      } catch (error) {
+        console.warn('Service Worker registration failed:', error);
+        return null;
+      }
+    }
+  }
+  
   // Initialize the gallery with portfolio data
   async function initializeGallery() {
+    // Register Service Worker for offline image caching
+    await registerServiceWorker();
+    
     // Load portfolio data
     await loadPortfolioData();
     
@@ -963,6 +1260,46 @@ document.addEventListener("DOMContentLoaded", () => {
       if (portfolioData.gallery.title) {
         document.title = `${portfolioData.gallery.title} — Homme Made`;
       }
+      
+      // Initial Vercel optimization check
+      console.log('🎯 Initializing future-proof image optimization system...');
+      await imageOptimization.checkVercelOptimization();
+      
+      // Verify all 21 portfolio items are accessible
+      const allItems = getAllPortfolioItems();
+      console.log(`📊 Portfolio verification: ${allItems.length} items found (expected: 21)`);
+      
+      if (allItems.length !== 21) {
+        console.warn('⚠️ Portfolio item count mismatch! Expected 21, found:', allItems.length);
+        // Log missing items for debugging
+        const expectedCount = portfolioData.generated.totalMedia || 21;
+        console.log('📋 Portfolio data shows total media:', expectedCount);
+      }
+      
+      // Set up periodic monitoring
+      setInterval(() => {
+        if (Math.random() < 0.1) { // 10% chance every interval
+          performanceMonitor.checkAPIHealth().then(results => {
+            const failedTests = results.filter(r => !r.success);
+            if (failedTests.length > 0) {
+              console.warn('🚨 API health check detected issues:', failedTests);
+              
+              // Auto-disable optimization if multiple consecutive failures
+              if (failedTests.length >= 2) {
+                imageOptimization.stats.vercelAvailable = false;
+                console.warn('🔧 Auto-disabling Vercel optimization due to API issues');
+              }
+            } else {
+              console.log('✅ API health check passed');
+              // Re-enable optimization if it was disabled
+              if (!imageOptimization.stats.vercelAvailable) {
+                imageOptimization.stats.vercelAvailable = true;
+                console.log('🔧 Re-enabling Vercel optimization - API is healthy');
+              }
+            }
+          });
+        }
+      }, 30000); // Every 30 seconds
     }
     
     // Initialize lazy loading
@@ -979,6 +1316,22 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Initialize navigation hover fallback
     initNavHoverFallback();
+    
+    // Add global performance monitoring
+    window.imageOptimizationStats = () => {
+      console.log('📊 Image Optimization Statistics:', imageOptimization.stats);
+      console.log('⚡ Performance Summary:', performanceMonitor.getSummary());
+      
+      // Show portfolio completeness
+      const allItems = getAllPortfolioItems();
+      console.log(`📋 Portfolio Status: ${allItems.length}/21 items accessible`);
+      
+      if (allItems.length === 21) {
+        console.log('✅ All portfolio items are properly loaded');
+      } else {
+        console.warn('⚠️ Some portfolio items may be missing or inaccessible');
+      }
+    };
   }
   
   // Isolate right column scroll events from main navigation
