@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+
 /* Chat Interface Functions */
 class ChatInterface {
   constructor(botType, systemPrompt) {

@@ -14,10 +14,13 @@
     "update-gallery": "node scripts/generate-portfolio.js"
   },
   "dependencies": {
+    "@openrouter/ai-sdk-provider": "^1.0.0-beta.3",
     "@vercel/blob": "^1.1.1",
+    "ai": "^5.0.0-beta.12",
+    "chokidar": "^3.5.3",
     "dotenv": "^17.2.0",
     "nodemailer": "^6.9.7",
-    "chokidar": "^3.5.3"
+    "zod": "^4.0.5"
   },
   "devDependencies": {
     "vercel": "^32.7.2"
