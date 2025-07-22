@@ -109,6 +109,8 @@ class ChatInterface {
     const message = this.inputField.value.trim();
     if (!message || this.isTyping) return;
     
+    console.log('💬 Sending message:', message);
+    
     // Add user message
     this.addMessage('user', message);
     this.inputField.value = '';
@@ -119,7 +121,9 @@ class ChatInterface {
     
     try {
       // Send to API
+      console.log('🔄 Calling chat API...');
       const response = await this.callChatAPI(message);
+      console.log('✅ Got response:', response);
       this.hideTypingIndicator();
       this.addMessage('bot', response);
       
@@ -133,9 +137,9 @@ class ChatInterface {
       }
       
     } catch (error) {
+      console.error('❌ Chat API error:', error);
       this.hideTypingIndicator();
       this.addMessage('bot', "I apologize, but I'm having trouble responding right now. Please try again in a moment, or feel free to contact our human team directly.");
-      console.error('Chat API error:', error);
     }
   }
   
@@ -146,25 +150,34 @@ class ChatInterface {
       content: message
     });
     
+    const requestData = {
+      messages: [
+        { role: 'system', content: this.systemPrompt },
+        ...this.messages
+      ],
+      botType: this.botType
+    };
+    
+    console.log('📤 Sending API request:', requestData);
+    
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        messages: [
-          { role: 'system', content: this.systemPrompt },
-          ...this.messages
-        ],
-        botType: this.botType
-      })
+      body: JSON.stringify(requestData)
     });
     
+    console.log('📥 API response status:', response.status, response.statusText);
+    
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('❌ API error response:', errorText);
+      throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
     }
     
     const data = await response.json();
+    console.log('📋 API response data:', data);
     
     // Add bot response to history
     this.messages.push({

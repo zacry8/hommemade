@@ -4,6 +4,8 @@
  */
 
 export default async function handler(req, res) {
+  console.log('🚀 Chat API called - Method:', req.method);
+  
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -11,17 +13,20 @@ export default async function handler(req, res) {
 
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
+    console.log('✅ CORS preflight request');
     res.status(200).end();
     return;
   }
 
   // Only allow POST requests
   if (req.method !== 'POST') {
+    console.log('❌ Invalid method:', req.method);
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
 
   try {
+    console.log('📨 Request body:', req.body);
     const { messages, botType } = req.body;
 
     // Validate input
@@ -39,8 +44,13 @@ export default async function handler(req, res) {
     const apiKey = process.env.OPENROUTER_API_KEY;
     const fallbackApiKey = process.env.GROQ_API_KEY;
 
+    console.log('🔑 API Key status:', {
+      openrouter: apiKey ? '✅ Available' : '❌ Missing',
+      groq: fallbackApiKey ? '✅ Available' : '❌ Missing'
+    });
+
     if (!apiKey && !fallbackApiKey) {
-      console.error('No API keys configured');
+      console.error('❌ No API keys configured');
       res.status(500).json({ error: 'Service temporarily unavailable' });
       return;
     }
@@ -48,14 +58,19 @@ export default async function handler(req, res) {
     // Try OpenRouter first (Qwen3 235B - highest quality)
     let response;
     try {
+      console.log('🔄 Trying OpenRouter API...');
       response = await callOpenRouterAPI(messages, apiKey);
+      console.log('✅ OpenRouter API success');
     } catch (openrouterError) {
-      console.log('OpenRouter API failed, trying Groq fallback...', openrouterError.message);
+      console.log('❌ OpenRouter API failed:', openrouterError.message);
       
       // Fallback to Groq if available
       if (fallbackApiKey) {
+        console.log('🔄 Trying Groq fallback...');
         response = await callGroqAPI(messages, fallbackApiKey);
+        console.log('✅ Groq fallback success');
       } else {
+        console.log('❌ No fallback available');
         throw openrouterError;
       }
     }
