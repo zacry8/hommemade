@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard — Homme Made</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/header-nav.css">
   <style>
     :root {
       --primary-dark: #0a0a0a;
@@ -363,6 +364,36 @@
   </style>
 </head>
 <body>
+  <!-- Floating Navigation Pill -->
+  <nav class="floating-nav">
+    <a href="index.html" class="logo">Homme Made</a>
+    <div class="nav-links">
+      <a href="index.html#services">Services</a>
+      <a href="index.html#philosophy">Philosophy</a>
+      <a href="index.html#work">Work</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="chatbot.html">AI Assistants</a>
+      <a href="pricing-menu.html">Pricing</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+    <div class="hamburger" id="hamburgerBtn">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#services">Services</a>
+    <a href="index.html#philosophy">Philosophy</a>
+    <a href="index.html#work">Work</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="chatbot.html">AI Assistants</a>
+    <a href="pricing-menu.html">Pricing</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+
   <div class="container">
     <div class="header">
       <h1>📊 Admin Dashboard</h1>
@@ -692,5 +723,6 @@
       return date >= weekAgo;
     }
   </script>
+  <script src="js/header-nav.js"></script>
 </body>
 </html>

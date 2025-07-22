@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Assistants — Homme Made</title>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R7M4D7CC93"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-R7M4D7CC93');
+  </script>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="styles/header-nav.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/chatbot.css">
+</head>
+<body>
+  <!-- Floating Navigation Pill -->
+  <nav class="floating-nav">
+    <a href="index.html" class="logo">Homme Made</a>
+    <div class="nav-links">
+      <a href="index.html#services">Services</a>
+      <a href="index.html#philosophy">Philosophy</a>
+      <a href="index.html#work">Work</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="pricing-menu.html">Pricing</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+    <div class="hamburger" id="hamburgerBtn">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#services">Services</a>
+    <a href="index.html#philosophy">Philosophy</a>
+    <a href="index.html#work">Work</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="pricing-menu.html">Pricing</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <section class="hero">
+      <div>
+        <h1>AI Assistants 🤖</h1>
+        <p>Human-in-the-loop AI assistants trained on our expertise. Choose your collaborative partner below.</p>
+      </div>
+    </section>
+
+    <section class="chatbot-selection">
+      <div class="chatbot-grid">
+        
+        <!-- Creative Director Assistant -->
+        <div class="chatbot-card glass hover-gradient" data-bot="creative-director">
+          <div class="chatbot-icon">🎨</div>
+          <h3>Creative Director</h3>
+          <p>Brand strategy, visual direction, and creative problem-solving. Your strategic creative partner.</p>
+          <div class="chatbot-features">
+            <span class="feature-tag">Brand Strategy</span>
+            <span class="feature-tag">Visual Direction</span>
+            <span class="feature-tag">Creative Systems</span>
+          </div>
+          <button class="cta-button glass-primary">Start Chat</button>
+        </div>
+
+        <!-- Automation Consultant -->
+        <div class="chatbot-card glass hover-gradient" data-bot="automation-consultant">
+          <div class="chatbot-icon">⚡</div>
+          <h3>Automation Consultant</h3>
+          <p>Workflow optimization, automation strategy, and technical guidance. Your efficiency expert.</p>
+          <div class="chatbot-features">
+            <span class="feature-tag">Workflow Design</span>
+            <span class="feature-tag">Process Automation</span>
+            <span class="feature-tag">Tech Integration</span>
+          </div>
+          <button class="cta-button glass-primary">Start Chat</button>
+        </div>
+
+        <!-- Portfolio Assistant -->
+        <div class="chatbot-card glass hover-gradient" data-bot="portfolio-assistant">
+          <div class="chatbot-icon">📸</div>
+          <h3>Portfolio Assistant</h3>
+          <p>Project insights, portfolio guidance, and work showcase support. Your creative showcase expert.</p>
+          <div class="chatbot-features">
+            <span class="feature-tag">Project Analysis</span>
+            <span class="feature-tag">Portfolio Review</span>
+            <span class="feature-tag">Creative Insights</span>
+          </div>
+          <button class="cta-button glass-primary">Start Chat</button>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="chatbot-info">
+      <div class="glass info-card">
+        <h3>How Our AI Assistants Work</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-icon">🧠</div>
+            <h4>Trained on Our Expertise</h4>
+            <p>Each assistant is trained on our methodologies, case studies, and creative philosophy.</p>
+          </div>
+          <div class="info-item">
+            <div class="info-icon">🔁</div>
+            <h4>Human-in-the-Loop</h4>
+            <p>AI provides initial guidance, but our human experts review and refine complex recommendations.</p>
+          </div>
+          <div class="info-item">
+            <div class="info-icon">🔒</div>
+            <h4>Private & Secure</h4>
+            <p>Your conversations are confidential and used only to provide better assistance.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="js/header-nav.js"></script>
+  <script src="js/chatbot.js"></script>
+</body>
+</html>

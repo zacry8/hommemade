@@ -60,11 +60,26 @@ document.addEventListener('DOMContentLoaded', function() {
   
   navLinks.forEach(link => {
     const linkHref = link.getAttribute('href');
-    if (
-      (currentPage === 'index.html' || currentPage === '') && linkHref.startsWith('#') ||
-      (currentPage === 'pricing-menu.html' && linkHref === 'pricing-menu.html') ||
-      (currentPage === 'gallery.html' && linkHref === 'gallery.html')
-    ) {
+    const isActive = (
+      // Index page (home) - highlight anchor links and home references
+      (currentPage === 'index.html' || currentPage === '') && 
+      (linkHref.startsWith('#') || linkHref === 'index.html')
+    ) || (
+      // Direct page matches
+      currentPage === 'pricing-menu.html' && linkHref === 'pricing-menu.html'
+    ) || (
+      currentPage === 'gallery.html' && linkHref === 'gallery.html'  
+    ) || (
+      // Chatbot pages - highlight AI Assistants link
+      (currentPage === 'chatbot.html' || currentPage.startsWith('chatbot-')) && 
+      linkHref === 'chatbot.html'
+    ) || (
+      // Special pages that don't have direct nav links
+      (currentPage === 'onboarding-form.html' || currentPage === 'admin.html') && 
+      linkHref === 'index.html'
+    );
+    
+    if (isActive) {
       link.style.background = 'rgba(211, 255, 0, 0.1)';
       link.style.color = 'var(--accent-lime)';
     }

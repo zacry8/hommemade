@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automation Consultant Assistant — Homme Made</title>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R7M4D7CC93"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-R7M4D7CC93');
+  </script>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="styles/header-nav.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/chatbot.css">
+</head>
+<body>
+  <!-- Floating Navigation Pill -->
+  <nav class="floating-nav">
+    <a href="index.html" class="logo">Homme Made</a>
+    <div class="nav-links">
+      <a href="index.html#services">Services</a>
+      <a href="index.html#philosophy">Philosophy</a>
+      <a href="index.html#work">Work</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="pricing-menu.html">Pricing</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+    <div class="hamburger" id="hamburgerBtn">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#services">Services</a>
+    <a href="index.html#philosophy">Philosophy</a>
+    <a href="index.html#work">Work</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="pricing-menu.html">Pricing</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+
+  <!-- Chat Container -->
+  <div class="chat-container">
+    
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <h1>⚡ Automation Consultant</h1>
+      <p>Your efficiency expert for workflow optimization, process automation, and human-in-the-loop system design. Let's streamline your operations.</p>
+      <div class="chat-nav">
+        <a href="chatbot.html" class="cta-button glass-secondary">← Back to Assistants</a>
+      </div>
+    </div>
+
+    <!-- Chat Interface -->
+    <div class="chat-interface">
+      <div class="chat-messages">
+        <!-- Messages will be populated by JavaScript -->
+      </div>
+      
+      <div class="chat-input-container">
+        <textarea 
+          class="chat-input" 
+          placeholder="Ask about workflow optimization, automation strategies, tool integration..."
+          rows="1"
+        ></textarea>
+        <button class="chat-send" type="button" aria-label="Send message">
+          ➤
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Prompts -->
+    <div class="quick-prompts">
+      <h3>Quick Prompts</h3>
+      <div class="prompt-grid">
+        <button class="prompt-button" data-prompt="How can I automate my creative workflow while maintaining quality control?">
+          Creative Workflow Automation
+        </button>
+        <button class="prompt-button" data-prompt="What's the best approach to implementing human-in-the-loop automation?">
+          Human-in-the-Loop Systems
+        </button>
+        <button class="prompt-button" data-prompt="Help me identify bottlenecks in my current design process">
+          Process Optimization
+        </button>
+        <button class="prompt-button" data-prompt="What tools should I consider for automating client communications?">
+          Client Communication Automation
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JavaScript -->
+  <script src="js/header-nav.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script>
+    // Add quick prompt functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const promptButtons = document.querySelectorAll('.prompt-button');
+      const chatInput = document.querySelector('.chat-input');
+      
+      promptButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const prompt = this.dataset.prompt;
+          chatInput.value = prompt;
+          chatInput.focus();
+          
+          // Auto-resize textarea
+          chatInput.style.height = 'auto';
+          chatInput.style.height = chatInput.scrollHeight + 'px';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
